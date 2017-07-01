@@ -199,6 +199,7 @@
     <Compile Include="Intrfaces\IBkTag.cs" />
     <Compile Include="Classes\PriceString.cs" />
     <Compile Include="Program.cs" />
+    <None Include="ProgramSettingsExample.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\frmCompany.resx">
       <DependentUpon>frmCompany.cs</DependentUpon>
@@ -420,7 +421,7 @@
   -->
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_BuildVersioningStyle="None.None.Increment.MonthStamp" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.Increment.MonthStamp" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

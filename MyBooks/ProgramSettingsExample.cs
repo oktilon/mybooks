@@ -16,8 +16,11 @@ namespace MyBooks
 		// to autologin user_id=1
 		// sha1(ARG_AUTOLOGIN) here
         public const string CMD_KEY = "SHA1_HASH_ARG_AUTOLOGIN_USER_ID=1";
-		
-		// Bug report parameters
+
+        // Hashing users passwords delimiter
+        public const string AUTH_KEY = "USER_PASSWORD_DELIMITER";
+
+        // Bug report parameters
         public const string BUG_FROM_MAIL = "SOFTWARE_EMAIL";
         public const string BUG_FROM_NAME = "SOFTWARE_NAME";
         public const string BUG_RCPT_MAIL = "DEVELOPER_EMAIL";

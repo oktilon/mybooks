@@ -7,7 +7,6 @@ namespace MyBooks
 {
     public class User
     {
-        const string AUTH_KEY = "M%v$=";
         const string NO_PWD = "NOT";
 
         public int Id = 0;
@@ -55,13 +54,13 @@ namespace MyBooks
 
         public void setPassword(string pwd)
         {
-            Hash = Program.CalculateSHA1Hash(Login + AUTH_KEY + pwd);
+            Hash = Program.CalculateSHA1Hash(Login + ProgramSettings.AUTH_KEY + pwd);
             Store();
         }
 
         public bool checkPassword(string pwd)
         {
-            return Hash == Program.CalculateSHA1Hash(Login + AUTH_KEY + pwd);
+            return Hash == Program.CalculateSHA1Hash(Login + ProgramSettings.AUTH_KEY + pwd);
         }
 
         public void Store()
