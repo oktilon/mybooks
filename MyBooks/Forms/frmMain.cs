@@ -137,7 +137,7 @@ namespace MyBooks
                 CultureInfo = Program.m_cif,
                 EditableMode = SourceGrid.EditableMode.None
             };
-            edTime = new SourceGrid.Cells.Editors.TimePicker("HH:mm:ss", new string[] { })
+            edTime = new sgc.Editors.TimePicker("HH:mm:ss", new string[] { })
             {
                 EditableMode = SourceGrid.EditableMode.None
             };
@@ -159,18 +159,18 @@ namespace MyBooks
             while (rd.Read())
             {
                 gridLst.Rows.Insert(iLine);
-                gridLst[iLine, 0] = new SourceGrid.Cells.RowHeader(rd.GetInt(1))
+                gridLst[iLine, 0] = new sgc.RowHeader(rd.GetInt(1))
                 {
                     Tag = rd.GetInt(0),
                     View = m_viewRow[iView]
                 };
-                gridLst[iLine, 1] = new SourceGrid.Cells.Cell(rd.GetDateTime(2))
+                gridLst[iLine, 1] = new sgc.Cell(rd.GetDateTime(2))
                 {
                     View = m_viewRight[iView],
                     Editor = edTime
                 };
                 decimal dPrc = rd.GetDecimal(3);
-                gridLst[iLine, 2] = new SourceGrid.Cells.Cell(dPrc)
+                gridLst[iLine, 2] = new sgc.Cell(dPrc)
                 {
                     View = m_viewRight[iView],
                     Editor = edMoney
