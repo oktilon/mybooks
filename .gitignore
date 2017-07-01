@@ -7,6 +7,8 @@ MyBooks/obj/
 MyBooks/img_src/
 
 # User files
+.gitignore
+.vs/
 *.user
 MyBooks/ProgramSettings.cs
 

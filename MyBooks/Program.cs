@@ -218,8 +218,8 @@ namespace MyBooks
 						"<tr><td><b>StackTrace</b></td><td>{6}</td></tr></table></body></html>", sCaption, ex.GetType().ToString(), iCode, ex.Message.Replace("\n", "<br />"), ex.Source, sql, ex.StackTrace.Replace("\n", "<br />"), msg);
 
 			// System.Net.Mail
-            MailAddress maFrom = new MailAddress("LikePrint@i.ua", "LikePrint #0", Encoding.UTF8);
-            MailAddress maDeveloper = new MailAddress("dest_inbox@ua.fm", "Денис", Encoding.UTF8);
+            MailAddress maFrom = new MailAddress(ProgramSettings.BUG_FROM_MAIL, ProgramSettings.BUG_FROM_NAME, Encoding.UTF8);
+            MailAddress maDeveloper = new MailAddress(ProgramSettings.BUG_RCPT_MAIL, ProgramSettings.BUG_RCPT_NAME, Encoding.UTF8);
 
             MailMessage mm = new MailMessage();
             mm.From = maFrom;
