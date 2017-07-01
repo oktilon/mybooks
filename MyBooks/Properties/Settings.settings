@@ -1,0 +1,45 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="MyBooks.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="strRecipient" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Основний</Value>
+    </Setting>
+    <Setting Name="strPayer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">він же</Value>
+    </Setting>
+    <Setting Name="strReason" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Підстава не вказана</Value>
+    </Setting>
+    <Setting Name="strCondition" Type="System.String" Scope="User">
+      <Value Profile="(Default)">нал.расчет</Value>
+    </Setting>
+    <Setting Name="strBillFmt" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ЧП-{0:000000}</Value>
+    </Setting>
+    <Setting Name="sqlServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">localhost</Value>
+    </Setting>
+    <Setting Name="sqlDatabase" Type="System.String" Scope="User">
+      <Value Profile="(Default)">successd_main</Value>
+    </Setting>
+    <Setting Name="remoteServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">localhost</Value>
+    </Setting>
+    <Setting Name="pointID" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="sSMTP" Type="System.String" Scope="User">
+      <Value Profile="(Default)">example.com</Value>
+    </Setting>
+    <Setting Name="iSMTP_Port" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">25</Value>
+    </Setting>
+    <Setting Name="sSMTP_User" Type="System.String" Scope="User">
+      <Value Profile="(Default)">none</Value>
+    </Setting>
+    <Setting Name="sSMTP_Pass" Type="System.String" Scope="User">
+      <Value Profile="(Default)">none</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

@@ -1,0 +1,426 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B819C459-7AC1-44AE-8BF5-612B03077014}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MyBooks</RootNamespace>
+    <AssemblyName>MyBooks</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <ApplicationIcon>Coins.ico</ApplicationIcon>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\SourceGrid4\References\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WinForms, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Windows\assembly\GAC_MSIL\Microsoft.ReportViewer.WinForms\11.0.0.0__89845dcd8080cc91\Microsoft.ReportViewer.WinForms.DLL</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\MySQL\MySQL Connector Net 6.9.9\Assemblies\v4.0\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Messaging" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Classes\CatalogItem.cs" />
+    <Compile Include="Classes\Bill.cs" />
+    <Compile Include="Classes\BillItem.cs" />
+    <Compile Include="Classes\BK_Density.cs" />
+    <Compile Include="Classes\BK_Device.cs" />
+    <Compile Include="Classes\BK_DeviceType.cs" />
+    <Compile Include="Classes\BK_DeviceTypeSnmp.cs" />
+    <Compile Include="Classes\BK_Format.cs" />
+    <Compile Include="Classes\BK_Icon.cs" />
+    <Compile Include="Classes\BK_Item.cs" />
+    <Compile Include="Classes\BK_Order.cs" />
+    <Compile Include="Classes\BK_OrderItem.cs" />
+    <Compile Include="Classes\BK_Point.cs" />
+    <Compile Include="Classes\BK_SubItem.cs" />
+    <Compile Include="Classes\BK_Carrier.cs" />
+    <Compile Include="Classes\BK_Surface.cs" />
+    <Compile Include="Classes.cs" />
+    <Compile Include="Classes\BO_Field.cs" />
+    <Compile Include="Classes\BO_Flag.cs" />
+    <Compile Include="Classes\Company.cs" />
+    <Compile Include="Classes\PageType.cs" />
+    <Compile Include="Classes\SNMP.cs" />
+    <Compile Include="Classes\T.cs" />
+    <Compile Include="Forms\frmEncrypt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmEncrypt.Designer.cs">
+      <DependentUpon>frmEncrypt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProgramSettings.cs" />
+    <Compile Include="Forms\frmCompany.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmCompany.Designer.cs">
+      <DependentUpon>frmCompany.cs</DependentUpon>
+    </Compile>
+    <Compile Include="dsMain.cs">
+      <DependentUpon>dsMain.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="dsMain.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>dsMain.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Event.cs" />
+    <Compile Include="Forms\frmEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmEditor.Designer.cs">
+      <DependentUpon>frmEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmError.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmError.Designer.cs">
+      <DependentUpon>frmError.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmMain.Designer.cs">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmMyOrder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmMyOrder.Designer.cs">
+      <DependentUpon>frmMyOrder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmMyOrders.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmMyOrders.Designer.cs">
+      <DependentUpon>frmMyOrders.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmPrice.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmPrice.Designer.cs">
+      <DependentUpon>frmPrice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmPwd.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmPwd.Designer.cs">
+      <DependentUpon>frmPwd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmBill.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmBill.Designer.cs">
+      <DependentUpon>frmBill.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmReports.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmReports.Designer.cs">
+      <DependentUpon>frmReports.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmText.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmText.Designer.cs">
+      <DependentUpon>frmText.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GraphicsExtension.cs" />
+    <Compile Include="Classes\ItemPrice.cs" />
+    <Compile Include="Classes\ItemRemain.cs" />
+    <Compile Include="Classes\ItemUnit.cs" />
+    <Compile Include="Classes\Page.cs" />
+    <Compile Include="Intrfaces\IBkObject.cs" />
+    <Compile Include="Intrfaces\IBkTag.cs" />
+    <Compile Include="Classes\PriceString.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\frmCompany.resx">
+      <DependentUpon>frmCompany.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmEditor.resx">
+      <DependentUpon>frmEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmEncrypt.resx">
+      <DependentUpon>frmEncrypt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmError.resx">
+      <DependentUpon>frmError.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmMain.resx">
+      <DependentUpon>frmMain.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmMyOrder.resx">
+      <DependentUpon>frmMyOrder.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmMyOrders.resx">
+      <DependentUpon>frmMyOrders.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmPrice.resx">
+      <DependentUpon>frmPrice.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmPwd.resx">
+      <DependentUpon>frmPwd.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmBill.resx">
+      <DependentUpon>frmBill.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmReports.resx">
+      <DependentUpon>frmReports.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmText.resx">
+      <DependentUpon>frmText.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="rptReport.rdlc" />
+    <EmbeddedResource Include="rptBill.rdlc" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Classes\Unit.cs" />
+    <Compile Include="Sql\denReader.cs" />
+    <Compile Include="Sql\denSQL.cs" />
+    <Compile Include="Sql\denSQLExtension.cs" />
+    <Compile Include="Sql\denTable.cs" />
+    <Compile Include="User.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\SourceGrid4\SourceGrid\SourceGrid.csproj">
+      <Project>{2a5a1657-dba8-4117-8e2a-9f1236ace9e2}</Project>
+      <Name>SourceGrid</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Gma.UserActivityMonitor\Gma.UserActivityMonitor.csproj">
+      <Project>{f52aa97e-180a-40ed-8f2b-09080171d6c7}</Project>
+      <Name>Gma.UserActivityMonitor</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\Lock.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\Bill.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\BillEdit.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\BillNew.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\Catalog.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\Print.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\Setup.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\BillNew32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\Open16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\Save16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\Exit16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dsMain.xsc">
+      <DependentUpon>dsMain.xsd</DependentUpon>
+    </None>
+    <None Include="dsMain.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsMain.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="dsMain.xss">
+      <DependentUpon>dsMain.xsd</DependentUpon>
+    </None>
+    <None Include="Pics\Report32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\Exit32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\Coins32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\add_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\ink16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\dot16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\Tab16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\boss_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\Pack32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\Pack.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\pencil_24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\close_24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\add_24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\trashcan_delete_17.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pics\right.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Coins.ico" />
+    <None Include="Pics\modify_16.png" />
+    <None Include="Pics\format16.png" />
+    <None Include="Pics\density16.png" />
+    <None Include="Pics\surface16.png" />
+    <None Include="Pics\bank16.png" />
+    <None Include="Pics\attach16.png" />
+    <None Include="Pics\home_16.png" />
+    <None Include="Pics\documents16.png" />
+    <None Include="Pics\page_p_16.png" />
+    <None Include="Pics\page_l_16.png" />
+    <None Include="Pics\meas_len_24.png" />
+    <None Include="Pics\meas_24.png" />
+    <None Include="Pics\meas_len_16.png" />
+    <None Include="Pics\meas_16.png" />
+    <None Include="Pics\Coins.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_BuildVersioningStyle="None.None.Increment.MonthStamp" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

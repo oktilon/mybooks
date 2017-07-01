@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="dsMain" targetNamespace="http://tempuri.org/dsMain.xsd" xmlns:mstns="http://tempuri.org/dsMain.xsd" xmlns="http://tempuri.org/dsMain.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="dsMain" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="dsMain" msprop:Generator_UserDSName="dsMain">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="tblBill" msprop:Generator_UserTableName="tblBill" msprop:Generator_RowEvArgName="tblBillRowChangeEvent" msprop:Generator_TableVarName="tabletblBill" msprop:Generator_TablePropName="tblBill" msprop:Generator_RowDeletingName="tblBillRowDeleting" msprop:Generator_RowChangingName="tblBillRowChanging" msprop:Generator_RowDeletedName="tblBillRowDeleted" msprop:Generator_RowEvHandlerName="tblBillRowChangeEventHandler" msprop:Generator_TableClassName="tblBillDataTable" msprop:Generator_RowChangedName="tblBillRowChanged" msprop:Generator_RowClassName="tblBillRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="id" msdata:AutoIncrement="true" msdata:AutoIncrementSeed="-1" msdata:AutoIncrementStep="-1" msprop:Generator_ColumnVarNameInTable="columnid" msprop:Generator_ColumnPropNameInRow="id" msprop:Generator_ColumnPropNameInTable="idColumn" msprop:Generator_UserColumnName="id" type="xs:int" />
+              <xs:element name="name" msprop:Generator_ColumnVarNameInTable="columnname" msprop:Generator_ColumnPropNameInRow="name" msprop:Generator_ColumnPropNameInTable="nameColumn" msprop:Generator_UserColumnName="name" type="xs:string" minOccurs="0" />
+              <xs:element name="unit" msprop:Generator_ColumnVarNameInTable="columnunit" msprop:Generator_ColumnPropNameInRow="unit" msprop:Generator_ColumnPropNameInTable="unitColumn" msprop:Generator_UserColumnName="unit" type="xs:string" minOccurs="0" />
+              <xs:element name="cnt" msprop:Generator_ColumnVarNameInTable="columncnt" msprop:Generator_ColumnPropNameInRow="cnt" msprop:Generator_ColumnPropNameInTable="cntColumn" msprop:Generator_UserColumnName="cnt" type="xs:int" default="0" minOccurs="0" />
+              <xs:element name="prc" msprop:Generator_ColumnVarNameInTable="columnprc" msprop:Generator_ColumnPropNameInRow="prc" msprop:Generator_ColumnPropNameInTable="prcColumn" msprop:Generator_UserColumnName="prc" type="xs:double" default="0" minOccurs="0" />
+              <xs:element name="sum" msprop:Generator_ColumnVarNameInTable="columnsum" msprop:Generator_ColumnPropNameInRow="sum" msprop:Generator_ColumnPropNameInTable="sumColumn" msprop:Generator_UserColumnName="sum" type="xs:double" default="0" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="tblReport" msprop:Generator_UserTableName="tblReport" msprop:Generator_RowEvArgName="tblReportRowChangeEvent" msprop:Generator_TableVarName="tabletblReport" msprop:Generator_TablePropName="tblReport" msprop:Generator_RowDeletingName="tblReportRowDeleting" msprop:Generator_RowChangingName="tblReportRowChanging" msprop:Generator_RowDeletedName="tblReportRowDeleted" msprop:Generator_RowEvHandlerName="tblReportRowChangeEventHandler" msprop:Generator_TableClassName="tblReportDataTable" msprop:Generator_RowChangedName="tblReportRowChanged" msprop:Generator_RowClassName="tblReportRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="id" msdata:AutoIncrement="true" msdata:AutoIncrementSeed="-1" msdata:AutoIncrementStep="-1" msprop:Generator_ColumnVarNameInTable="columnid" msprop:Generator_ColumnPropNameInRow="id" msprop:Generator_ColumnPropNameInTable="idColumn" msprop:Generator_UserColumnName="id" type="xs:int" minOccurs="0" />
+              <xs:element name="name" msprop:Generator_ColumnVarNameInTable="columnname" msprop:Generator_ColumnPropNameInRow="name" msprop:Generator_ColumnPropNameInTable="nameColumn" msprop:Generator_UserColumnName="name" type="xs:string" minOccurs="0" />
+              <xs:element name="cnt" msprop:Generator_ColumnVarNameInTable="columncnt" msprop:Generator_ColumnPropNameInRow="cnt" msprop:Generator_ColumnPropNameInTable="cntColumn" msprop:Generator_UserColumnName="cnt" type="xs:int" default="0" />
+              <xs:element name="prc" msprop:Generator_ColumnVarNameInTable="columnprc" msprop:Generator_ColumnPropNameInRow="prc" msprop:Generator_ColumnPropNameInTable="prcColumn" msprop:Generator_UserColumnName="prc" type="xs:double" default="0" />
+              <xs:element name="sum" msprop:Generator_ColumnVarNameInTable="columnsum" msprop:Generator_ColumnPropNameInRow="sum" msprop:Generator_ColumnPropNameInTable="sumColumn" msprop:Generator_UserColumnName="sum" type="xs:double" default="0" minOccurs="0" />
+              <xs:element name="unit" msprop:Generator_ColumnVarNameInTable="columnunit" msprop:Generator_ColumnPropNameInRow="unit" msprop:Generator_ColumnPropNameInTable="unitColumn" msprop:Generator_UserColumnName="unit" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="tblBillKey1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:tblBill" />
+      <xs:field xpath="mstns:id" />
+    </xs:unique>
+    <xs:unique name="Constraint1">
+      <xs:selector xpath=".//mstns:tblReport" />
+      <xs:field xpath="mstns:id" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>
