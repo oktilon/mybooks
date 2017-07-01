@@ -106,7 +106,6 @@ namespace MyBooks
 
         public static List<Unit> getAll() { return cache; }
 
-
         public bool Edit(bool bNew)
 		{
 			if (bNew)

@@ -25,7 +25,8 @@ namespace MyBooks
         private sgcv.Cell vRgt = new sgcv.Cell();
         private sgcv.Cell vCen = new sgcv.Cell();
         private sgcv.Cell vMyPrcNew = new sgcv.Cell();
-        private sgc.Editors.DateTimePicker eDate = new sgc.Editors.DateTimePicker();
+        private sgc.Editors.TextBoxCurrency ePrc = new sgc.Editors.TextBoxCurrency(typeof(decimal));
+        private sgc.Editors.ComboBox eUnits = new sgc.Editors.ComboBox(typeof(Unit));
 
         public frmMyOrder(BK_Order ord)
         {
@@ -43,10 +44,12 @@ namespace MyBooks
             vRgt.TextAlignment = DevAge.Drawing.ContentAlignment.MiddleRight;
             vCen.TextAlignment = DevAge.Drawing.ContentAlignment.MiddleCenter;
             vMyPrcNew.TextAlignment = DevAge.Drawing.ContentAlignment.MiddleRight;
-            vMyPrcNew.BackColor = Color.Cornsilk;
-            eDate.Control.Format = DateTimePickerFormat.Custom;
-            eDate.Control.CustomFormat = "dd.MM.yy";
-            eDate.EditableMode = SourceGrid.EditableMode.None;
+            vMyPrcNew.BackColor = Color.PaleVioletRed;
+            ePrc.CultureInfo = Program.m_cif;
+            //ePrc..Control..CustomFormat = "dd.MM.yy";
+            //ePrc.EditableMode = SourceGrid.EditableMode.Default;
+            eUnits.Control.DropDownStyle = ComboBoxStyle.DropDownList;
+            eUnits.Control.Items.AddRange(Unit.getAll().ToArray());
             gridCat.SetHeaders(new string[] { "Код", "Наименование", "Цена", "Ед." }, new int[] { 100, 250, 100, 50 }, false, true);
             gridOrder.SetHeaders(new string[] { "Код", "Наименование", "Цена", "Кол", "Ед.", "Сумма", "Моя цена" }, new int[] { 100, 250, 100, 50, 50, 50, 50 }, false, true);
             MyOrderGridEvent cEv = new MyOrderGridEvent(this);
@@ -96,11 +99,11 @@ namespace MyBooks
 
             gridOrder[iRow, 0] = new sgc.RowHeader(ci.Code) { Tag = ci };
             gridOrder[iRow, 1] = new sgc.Cell(ci.Item.Name);
-            gridOrder[iRow, 2] = new sgc.Cell(oi.Price);
+            gridOrder[iRow, 2] = new sgc.Cell(oi.Price) { Editor = ePrc };
             gridOrder[iRow, 3] = new sgc.Cell(oi.Count);
-            gridOrder[iRow, 4] = new sgc.Cell(oi.Unit.Short);
+            gridOrder[iRow, 4] = new sgc.Cell(oi.Unit) { Editor = eUnits };
             gridOrder[iRow, 5] = new sgc.Cell(oi.Total);
-            gridOrder[iRow, 6] = new sgc.Cell(ip.Prc) { Tag = ip, View = vMyPrc };
+            gridOrder[iRow, 6] = new sgc.Cell(ip.Prc) { Tag = ip, View = vMyPrc, Editor = ePrc };
             ordCnt = Decimal.Round(ordCnt + oi.Count, 2);
             ordPrice = Decimal.Round(ordPrice + oi.Total, 2);
             if (reload)
