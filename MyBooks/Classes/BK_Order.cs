@@ -16,6 +16,8 @@ namespace MyBooks
         public decimal Summ = 0m;
         public BK_Point Point;
 
+        public List<BK_OrderItem> Items = new List<BK_OrderItem>();
+
         public static BK_Order Unknown = new BK_Order();
         public static List<BK_Order> cache = null;
 
@@ -72,6 +74,25 @@ namespace MyBooks
         {
             frmMyOrder frm = new frmMyOrder(this);
             return frm.ShowDialog() == System.Windows.Forms.DialogResult.OK;
+        }
+
+        public bool evalMine(BK_OrderItem oi, ItemPrice ip)
+        {
+            decimal prc = oi.Price * Supplier.Coeff;
+            if (prc > ip.Prc)
+            {
+                ip.Prc = decimal.Round(prc, 2);
+                return true;
+            }
+            return false;
+        }
+
+        public decimal Total
+        {
+            get
+            {
+                return decimal.Round(Items.Aggregate(0m, (a, x) => a + x.Total), 2);
+            }
         }
 
         public bool Match(Company sup, bool bUnReady)

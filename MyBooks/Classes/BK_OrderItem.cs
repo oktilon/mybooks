@@ -33,5 +33,15 @@ namespace MyBooks
         }
 
         public decimal Total { get { return Price * Count; } }
+
+        internal void SetPrice(string displayText)
+        {
+            decimal.TryParse(displayText, out Price);
+        }
+        internal void SetCount(string displayText)
+        {
+            decimal.TryParse(displayText, out Count);
+        }
+
     }
 }

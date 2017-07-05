@@ -18,15 +18,22 @@ namespace MyBooks
         public Company m_Supplier = null;
         private List<CatalogItem> lstCat;
 
-        private decimal ordCnt = 0m;
-        private decimal ordPrice = 0m;
-
         private sgcv.Cell vLft = new sgcv.Cell();
         private sgcv.Cell vRgt = new sgcv.Cell();
         private sgcv.Cell vCen = new sgcv.Cell();
         private sgcv.Cell vMyPrcNew = new sgcv.Cell();
         private sgc.Editors.TextBoxCurrency ePrc = new sgc.Editors.TextBoxCurrency(typeof(decimal));
         private sgc.Editors.ComboBox eUnits = new sgc.Editors.ComboBox(typeof(Unit));
+        private sgc.Editors.TextBox eName;
+        private sgc.Editors.TextBoxNumeric eCnt;
+
+        private const int K_CODE = 0;
+        private const int K_NAME = 1;
+        private const int K_PRC  = 2;
+        private const int K_CNT  = 3;
+        private const int K_UNIT = 4;
+        private const int K_TOT  = 5;
+        private const int K_MINE = 6;
 
         public frmMyOrder(BK_Order ord)
         {
@@ -50,20 +57,24 @@ namespace MyBooks
             //ePrc.EditableMode = SourceGrid.EditableMode.Default;
             eUnits.Control.DropDownStyle = ComboBoxStyle.DropDownList;
             eUnits.Control.Items.AddRange(Unit.getAll().ToArray());
+            eName = new sgc.Editors.TextBox(typeof(string));
+            eCnt = new sgc.Editors.TextBoxNumeric(typeof(decimal)) { CultureInfo = Program.m_cif };
             gridCat.SetHeaders(new string[] { "Код", "Наименование", "Цена", "Ед." }, new int[] { 100, 250, 100, 50 }, false, true);
-            gridOrder.SetHeaders(new string[] { "Код", "Наименование", "Цена", "Кол", "Ед.", "Сумма", "Моя цена" }, new int[] { 100, 250, 100, 50, 50, 50, 50 }, false, true);
+            gridOrder.SetHeaders(new string[] { "Код", "Наименование", "Цена", "Кол", "Ед.изм.", "Сумма", "Моя цена" }, new int[] { 100, 250, 100, 50, 50, 50, 50 }, false, true);
             MyOrderGridEvent cEv = new MyOrderGridEvent(this);
             gridCat.Controller.AddController(cEv);
+            // Events
+            gridOrder.Controller.AddController(new frmMyOrderGridEvents(this, "order"));
         }
 
         void FillSuppliers()
         {
             cbSupplier.Items.Clear();
-            cbSupplier.Items.Add(Company.AllSuppliers);
+            //cbSupplier.Items.Add(Company.AllSuppliers);
             Company[] lstCom = Company.getSuppliers().ToArray();
             cbSupplier.Items.AddRange(lstCom);
             if (lstCom.Count() < 1) { cbSupplier.SelectedIndex = 0; return; }
-            if (m_Supplier == null)
+            if (m_Supplier == null || m_Supplier.Id == 0)
             {
                 m_Supplier = lstCom.First();
                 cbSupplier.SelectedItem = m_Supplier;
@@ -82,6 +93,7 @@ namespace MyBooks
             if (oi == null)
             {
                 oi = new BK_OrderItem(ci);
+                m_Order.Items.Add(oi);
                 reload = true;
             }
             gridOrder.Rows.Insert(iRow);
@@ -97,28 +109,25 @@ namespace MyBooks
                 vMyPrc = vMyPrcNew;
             }
 
-            gridOrder[iRow, 0] = new sgc.RowHeader(ci.Code) { Tag = ci };
-            gridOrder[iRow, 1] = new sgc.Cell(ci.Item.Name);
-            gridOrder[iRow, 2] = new sgc.Cell(oi.Price) { Editor = ePrc };
-            gridOrder[iRow, 3] = new sgc.Cell(oi.Count);
-            gridOrder[iRow, 4] = new sgc.Cell(oi.Unit) { Editor = eUnits };
-            gridOrder[iRow, 5] = new sgc.Cell(oi.Total);
-            gridOrder[iRow, 6] = new sgc.Cell(ip.Prc) { Tag = ip, View = vMyPrc, Editor = ePrc };
-            ordCnt = Decimal.Round(ordCnt + oi.Count, 2);
-            ordPrice = Decimal.Round(ordPrice + oi.Total, 2);
+            gridOrder[iRow, K_CODE] = new sgc.RowHeader(ci.Code) { Tag = ci };
+            gridOrder[iRow, K_NAME] = new sgc.Cell(ci.Item.Name) { Editor = eName };
+            gridOrder[iRow, K_PRC]  = new sgc.Cell(oi.Price) { Editor = ePrc };
+            gridOrder[iRow, K_CNT]  = new sgc.Cell(oi.Count) { Editor = eCnt } ;
+            gridOrder[iRow, K_UNIT] = new sgc.Cell(oi.Unit) { Editor = eUnits };
+            gridOrder[iRow, K_TOT]  = new sgc.Cell(oi.Total);
+            gridOrder[iRow, K_MINE] = new sgc.Cell(ip.Prc) { Tag = ip, View = vMyPrc, Editor = ePrc };
             if (reload)
             {
                 gridOrder.AutoSizeCells();
-                txtTotal.Text = ordPrice.ToString();
+                txtTotal.Text = m_Order.Total.ToString();
             }
         }
 
         void FillOrder()
         {
+            m_Order.Items.Clear();
             gridOrder.Redim(1, 6);
             int iRow = 1;
-            ordCnt = 0m;
-            ordPrice = 0m;
             denSQL.denReader r = denSQL.Query("SELECT * FROM bk_slist WHERE sl_sup={0}", m_Order.Id);
             while (r.Read())
             {
@@ -128,12 +137,13 @@ namespace MyBooks
                 {
                     ci = new CatalogItem(oi, (Company)cbSupplier.SelectedItem);
                 }
+                m_Order.Items.Add(oi);
                 addOrderRow(iRow, ci, oi);
                 iRow++;
             }
             r.Close();
             gridOrder.AutoSizeCells();
-            txtTotal.Text = ordPrice.ToString();
+            txtTotal.Text = m_Order.Total.ToString();
         }
 
         public void Grid_OnClick(SourceGrid.CellContext cntx, EventArgs e)
@@ -158,10 +168,10 @@ namespace MyBooks
                 {
                     gridCat.Rows.Insert(iR);
                     gridCat.Rows[iR].Tag = ci;
-                    gridCat[iR, 0] = new SourceGrid.Cells.RowHeader(ci.Code);
-                    gridCat[iR, 1] = new SourceGrid.Cells.Cell(ci.Item.Name);
-                    gridCat[iR, 2] = new SourceGrid.Cells.Cell(ci.Price);
-                    gridCat[iR, 3] = new SourceGrid.Cells.Cell(ci.Unit.Short);
+                    gridCat[iR, 0] = new sgc.RowHeader(ci.Code);
+                    gridCat[iR, 1] = new sgc.Cell(ci.Item.Name);
+                    gridCat[iR, 2] = new sgc.Cell(ci.Price);
+                    gridCat[iR, 3] = new sgc.Cell(ci.Unit.Short);
                     iR++;
                 }
             }
@@ -229,14 +239,6 @@ namespace MyBooks
         private void btnDel_Click(object sender, EventArgs e)
         {
 
-        }
-
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void txtSearch_KeyUp(object sender, KeyEventArgs e)
-        {
         }
 
         private void txtName_KeyUp(object sender, KeyEventArgs e)
@@ -324,5 +326,48 @@ namespace MyBooks
             txtFind.Text = "";
             txtFind.Focus();
         }
+
+        public void GridOrder_OnEditEnded(SourceGrid.CellContext cntx, EventArgs e)
+        {
+            int row = cntx.Position.Row;
+            CatalogItem ci = (CatalogItem)gridOrder[row, K_CODE].Tag;
+            BK_OrderItem oi = (BK_OrderItem)gridOrder.Rows[row].Tag;
+            ItemPrice ip = (ItemPrice)gridOrder[row, K_MINE].Tag;
+            switch (cntx.Position.Column)
+            {
+                case K_PRC:
+                    oi.SetPrice(cntx.DisplayText);
+                    gridOrder[row, K_TOT].Value = oi.Total;
+                    if(m_Order.evalMine(oi, ip))
+                    {
+                        gridOrder[row, K_MINE].Value = ip.Prc;
+                    }
+                    txtTotal.Text = m_Order.Total.ToString();
+                    break;
+
+                case K_CNT:
+                    oi.SetCount(cntx.DisplayText);
+                    gridOrder[row, K_TOT].Value = oi.Total;
+                    txtTotal.Text = m_Order.Total.ToString();
+                    break;
+
+            }
+        }
+    }
+
+    public class frmMyOrderGridEvents : sgc.Controllers.ControllerBase
+    {
+        private frmMyOrder m_Frm;
+        private string m_GridTag = "";
+
+        public frmMyOrderGridEvents(frmMyOrder frm, string gridTag) { m_Frm = frm;  m_GridTag = gridTag; }
+
+        public override void OnEditEnded(SourceGrid.CellContext cntx, EventArgs e) {
+            switch (m_GridTag)
+            {
+                case "order": m_Frm.GridOrder_OnEditEnded(cntx, e); break;
+            }
+        }
+        //public override void OnMouseUp(SourceGrid.CellContext sender, MouseEventArgs e) { m_Frm.Grid_OnMouseUp(sender, m_Tag, e); }
     }
 }

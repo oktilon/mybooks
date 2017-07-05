@@ -99,6 +99,11 @@ namespace MyBooks
 
         public override string ToString() { return Item.Name; }
 		public override int GetHashCode() { return Id; }
-	}
+
+        internal void SetPrice(string displayText)
+        {
+            decimal.TryParse(displayText, out Price);
+        }
+    }
 }
 

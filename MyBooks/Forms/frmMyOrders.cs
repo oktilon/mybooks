@@ -71,7 +71,12 @@ namespace MyBooks
 
         private void btnAddOrder_Click(object sender, EventArgs e)
         {
-            BK_Order ord = BK_Order.addOrder((Company)cbSupplier.SelectedItem);
+            Company sup = (Company)cbSupplier.SelectedItem;
+            if(sup.Id == 0)
+            {
+                sup = Company.getSuppliers().First();
+            }
+            BK_Order ord = BK_Order.addOrder(sup);
             ord.Edit();
         }
 
