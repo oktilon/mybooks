@@ -19,6 +19,7 @@ namespace MyBooks
 
 		public ItemPrice() { }
 		public ItemPrice(BK_Item i, decimal p = 1, PrcAddTag mt = null) {
+            HasChanged = true;
             ItemId = i.Id;
             Prc = p;
             if (mt == null) return;
@@ -28,10 +29,19 @@ namespace MyBooks
             Carrier = mt.c;
             Consumption = 1;
         }
-		/// <summary>
-		/// SELECT * FROM bk_price WHERE p_item=BK_Item.Id
-		/// </summary>
-		public ItemPrice(denSQL.denReader r)
+        public ItemPrice(BK_Item i, CatalogItem ci)
+        {
+            ItemId = i.Id;
+            Prc = decimal.Round(ci.Price * ci.Com.Coeff, 2);
+            Pnt = BK_Point.self;
+            Unit = ci.Unit;
+            HasChanged = true;
+        }
+
+        /// <summary>
+        /// SELECT * FROM bk_price WHERE p_item=BK_Item.Id
+        /// </summary>
+        public ItemPrice(denSQL.denReader r)
 		{
 			ItemId = r.GetInt("p_item");
 			Pnt = BK_Point.getPoint(r); // p_point
@@ -41,12 +51,18 @@ namespace MyBooks
             Consumption = r.GetInt("p_car_cnt");
 		}
 
-		public int Store()
+		public int Store(int iItem = -1)
 		{
-			HasChanged = false;
-			object[] oPar = new object[] { ItemId, Pnt.Id, Unit.Id, Carrier.ItemId, Prc, Consumption };
-			denSQL.Command("DELETE FROM bk_price WHERE p_item={0} AND p_point={1} AND p_unit={2} AND p_car={3}", oPar);
-			return denSQL.Command("INSERT INTO bk_price (p_item, p_point, p_unit, p_car, p_prc, p_car_cnt) VALUES ({0}, {1}, {2}, {3}, {4}, {5})", oPar);
+            if (!HasChanged) return 0;
+            if (iItem > 0 && ItemId == 0) ItemId = iItem;
+            HasChanged = false;
+            object[] oPar = new object[] { ItemId, Pnt.Id, Unit.Id, Carrier.ItemId, Prc.ToString(denSQL.Cif_sql), Consumption };
+			//denSQL.Command("DELETE FROM bk_price WHERE p_item={0} AND p_point={1} AND p_unit={2} AND p_car={3}", oPar);
+			return denSQL.Command("INSERT INTO bk_price (p_item, p_point, p_unit, p_car, p_prc, p_car_cnt) " +
+                                "VALUES ({0}, {1}, {2}, {3}, {4}, {5}) " +
+                                "ON DUPLICATE KEY UPDATE " +
+                                "p_prc = {4}," +
+                                "p_car_cnt = {5}", oPar);
 		}
 
         public int CalculateRemain()
@@ -57,12 +73,26 @@ namespace MyBooks
         public void setPrice(string prc)
         {
             decimal p = 0;
-            if (decimal.TryParse(prc, out p)) Prc = p;
+            if (decimal.TryParse(prc, out p)) setPrice(p);
         }
+
+        public void setPrice(decimal prc)
+        {
+            if(Prc != prc)
+            {
+                Prc = prc;
+                HasChanged = true;
+            }
+        }
+
         public void setConsumption(string cnt)
         {
             int c = 0;
-            if (int.TryParse(cnt, out c)) Consumption = c;
+            if (int.TryParse(cnt, out c) && Consumption != c)
+            {
+                Consumption = c;
+                HasChanged = true;
+            }
         }
 
         public void Delete()

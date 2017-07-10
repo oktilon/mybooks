@@ -47,7 +47,7 @@ namespace MyBooks
 			Param = 1; // In_use
 			BaseUnit = Unit.getUnit(1); // шт
 			MinUnit = Unit.getUnit(1); // шт
-			string sNewId = denSQL.Scalar("SELECT 1+MAX(i_id) FROM bk_items").ToString();
+            string sNewId = getNextId();
 
 			switch (iWhat)
 			{
@@ -74,6 +74,31 @@ namespace MyBooks
 					break;
 			}
 		}
+
+        /// <summary>
+        /// New Item
+        /// </summary>
+        /// <param name="sName">Item name</param>
+        public BK_Item(string sName)
+        {
+            Tab = Page.NullPage;
+            //TabPos = Tab.Grid.RowsCount;
+            Param = 1; // In_use
+            BaseUnit = Unit.getUnit(1); // шт
+            MinUnit = Unit.getUnit(1); // шт
+
+            Name = sName;
+            Short = sName;
+            NameUa = sName;
+            Articul = "ITM_" + getNextId();
+        }
+
+        public static BK_Item createItem(string sName)
+        {
+            BK_Item i = new BK_Item(sName);
+            cache.Add(i);
+            return i;
+        }
 
         public void readSelf(denSQL.denReader r)
         {
@@ -183,7 +208,9 @@ namespace MyBooks
 				Prices.Add(new ItemPrice(this, 1, mt));
 		}
 
-		public void ResetChangeFlag() { foreach (ItemPrice ip in Prices) ip.HasChanged = false; }
+        private static string getNextId() { return denSQL.Scalar("SELECT 1+MAX(i_id) FROM bk_items").ToString(); }
+
+        public void ResetChangeFlag() { foreach (ItemPrice ip in Prices) ip.HasChanged = false; }
 
 		public bool InUse { get { return Param.IsSetBit(1); } set { Param = Param.SetBit(1, value); } }
 		public bool IsService { get { return Param.IsSetBit(2); } set { Param = Param.SetBit(2, value); } }
@@ -295,6 +322,8 @@ namespace MyBooks
         }
 
         public static List<BK_Item> getAll() { return cache; }
+
+        public static void purgeItems() { if(cache != null) cache.RemoveAll(m => m.Id == 0); }
 
         public string TypeCaption { get { return IsCarrier ? "Бумага" : IsService ? "Услуга" : "Товар"; } }
 		public override string ToString() { return String.Format("{0} [{1}]", Short, Id); }

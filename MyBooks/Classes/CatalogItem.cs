@@ -41,7 +41,7 @@ namespace MyBooks
             Price = oi.Price;
             Unit = oi.Unit;
             Com = sup;
-            Item = BK_Item.getItem(oi.ItemId);
+            Item = oi.Item;
             dtUpdated = DateTime.Now;
         }
         public CatalogItem(BK_Item it, Company sup)
@@ -98,7 +98,7 @@ namespace MyBooks
 
 
         public override string ToString() { return Item.Name; }
-		public override int GetHashCode() { return Id; }
+		public override int GetHashCode() { return Item.GetHashCode(); }
 
         internal void SetPrice(string displayText)
         {

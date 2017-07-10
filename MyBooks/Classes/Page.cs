@@ -17,7 +17,7 @@ namespace MyBooks
 		//
 		public int Id = 0;
 		public string Tag = "unk" + iCnt.ToString();
-		public string Caption = "ОШИБКА";
+		public string Caption = "Не задана";
 		public int Pos = 0;
         public PageType type = PageType.Default;
         //

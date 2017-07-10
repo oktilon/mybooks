@@ -7,17 +7,18 @@ namespace MyBooks
 {
     public class BK_OrderItem
     {
-        public int Id;
-        public int ItemId;
+        public int OrderId;
+        public BK_Item Item;
         public decimal Price;
         public decimal Count;
         public Unit Unit;
 
-        public BK_OrderItem() { Id = 0; ItemId = 0; Price = 0m; Count = 1m; Unit = Unit.getUnit(1); }
+        public BK_OrderItem() { OrderId = 0; Item = BK_Item.Unset; Price = 0m; Count = 1m; Unit = Unit.getUnit(1); }
 
-        public BK_OrderItem(CatalogItem ci)
+        public BK_OrderItem(BK_Order ord, CatalogItem ci)
         {
-            ItemId = ci.Item.Id;
+            OrderId = ord.Id;
+            Item = ci.Item;
             Price = ci.Price;
             Count = 1;
             Unit = ci.Unit;
@@ -25,11 +26,31 @@ namespace MyBooks
 
         public BK_OrderItem(denSQL.denReader r)
         {
-            Id = r.GetInt("sl_id");
-            ItemId = r.GetInt("sl_item");
+            OrderId = r.GetInt("sl_sup");
+            Item = BK_Item.getItem(r, "sl_item");
             Price = r.GetDecimal("sl_prc");
             Count = r.GetDecimal("sl_cnt");
             Unit = Unit.getUnit(r, "sl_unit");
+        }
+
+        public int Store()
+        {
+            string p = Price.ToString(denSQL.Cif_sql);
+            string c = Count.ToString(denSQL.Cif_sql);
+            return denSQL.Command("INSERT INTO bk_slist " +
+                                "VALUES ({0}, {1}, {2}, {3}, {4}) " +
+                                "ON DUPLICATE KEY UPDATE " +
+                                "sl_prc = {2}," +
+                                "sl_cnt = {3}," +
+                                "sl_unit = {3}",
+                                OrderId, Item.Id, p, c, Unit.Id);
+        }
+
+        public ItemPrice addNewPrice(CatalogItem ci)
+        {
+            ItemPrice ip = new ItemPrice(Item, ci);
+            Item.Prices.Add(ip);
+            return ip;
         }
 
         public decimal Total { get { return Price * Count; } }

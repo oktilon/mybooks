@@ -86,6 +86,7 @@
             this.cmdOk.TabIndex = 10;
             this.cmdOk.Text = "ОК";
             this.cmdOk.UseVisualStyleBackColor = true;
+            this.cmdOk.Click += new System.EventHandler(this.cmdOk_Click);
             // 
             // label1
             // 
@@ -199,7 +200,7 @@
             // btnAdd
             // 
             this.btnAdd.Image = global::MyBooks.Properties.Resources.right;
-            this.btnAdd.Location = new System.Drawing.Point(3, 19);
+            this.btnAdd.Location = new System.Drawing.Point(4, 19);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(25, 25);
             this.btnAdd.TabIndex = 15;
@@ -298,7 +299,6 @@
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(181, 20);
             this.txtName.TabIndex = 21;
-            this.txtName.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtName_KeyUp);
             // 
             // label3
             // 
@@ -365,6 +365,7 @@
             this.Name = "frmMyOrder";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Параметры заказа";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMyOrder_FormClosing);
             this.Load += new System.EventHandler(this.frmMyOrder_Load);
             this.grpCat.ResumeLayout(false);
             this.grpOrder.ResumeLayout(false);

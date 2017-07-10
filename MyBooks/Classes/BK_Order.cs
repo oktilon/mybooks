@@ -67,8 +67,24 @@ namespace MyBooks
             t.AddFld("s_number", Number);
             t.AddFld("s_status", Status);
             t.AddFld("s_point", Point.Id);
-            return t.Store(ref Id);
+            int ret = t.Store(ref Id);
+            denSQL.Command("DELETE FROM bk_slist WHERE sl_sup = {0}", Id);
+            foreach(BK_OrderItem it in Items)
+            {
+                if (it.Item.Id == 0 || it.Item.HasPriceChanged) it.Item.Store();
+                it.Store();
+            }
+            return ret;
         }
+
+        public void readItems()
+        {
+            Items.Clear();
+            denSQL.denReader r = denSQL.Query("SELECT * FROM bk_slist WHERE sl_sup={0}", Id);
+            while (r.Read()) Items.Add(new BK_OrderItem(r));
+            r.Close();
+        }
+
 
         public bool Edit()
         {
@@ -81,7 +97,7 @@ namespace MyBooks
             decimal prc = oi.Price * Supplier.Coeff;
             if (prc > ip.Prc)
             {
-                ip.Prc = decimal.Round(prc, 2);
+                ip.setPrice(decimal.Round(prc, 2));
                 return true;
             }
             return false;
@@ -126,6 +142,13 @@ namespace MyBooks
                                 "{0} " +
                                 "GROUP BY s_id " +
                                 "{1}", sWhere, sOrder);
+        }
+
+        public BK_OrderItem createItem(CatalogItem ci)
+        {
+            BK_OrderItem oi = new BK_OrderItem(this, ci);
+            Items.Add(oi);
+            return oi;
         }
 
         public static void initOrders()
