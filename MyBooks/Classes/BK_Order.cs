@@ -71,7 +71,8 @@ namespace MyBooks
             denSQL.Command("DELETE FROM bk_slist WHERE sl_sup = {0}", Id);
             foreach(BK_OrderItem it in Items)
             {
-                if (it.Item.Id == 0 || it.Item.HasPriceChanged) it.Item.Store();
+                if (it.Item.Id == 0) it.Item.Store();
+                else if (it.Item.HasPriceChanged) it.Item.storePrices();
                 it.Store();
             }
             return ret;

@@ -263,12 +263,18 @@ namespace MyBooks
             t.AddFld("i_device", Device.Id);
 			int ret = t.Store(ref Id);
 			if (Id == 0) return ret;
-			foreach (ItemPrice ip in Prices) { ip.ItemId = Id; ip.Store(); }
+            storePrices();
 			foreach (ItemUnit iu in SubUnits) { iu.ItemId = Id; iu.Store(); }
 			if (!Carrier.IsNotCarrier) { Carrier.ItemId = Id; Carrier.Store(); }
 			//foreach (BK_SubItem si in SubItems) { si.ItemId = Id; si.Store(); }
 			return ret;
 		}
+
+        public void storePrices()
+        {
+            if (Id == 0) return;
+            foreach (ItemPrice ip in Prices) { ip.ItemId = Id; ip.Store(); }
+        }
 
         public static IEnumerable<BK_Item> getPageItems(Page page)
         {
