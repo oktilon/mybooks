@@ -61,8 +61,10 @@ namespace MyBooks
                 string sPwd = Decrypt(ProgramSettings.DB_PASS);
 
                 //string h = CalculateSHA1Hash("111");
+                string sServer = ProgramSettings.DB_HOST == "##" ? m_Settings.sqlServer : ProgramSettings.DB_HOST;
+                string sDatabase = ProgramSettings.DB_BASE == "##" ? m_Settings.sqlDatabase : ProgramSettings.DB_BASE;
 
-                denSQL.init(m_Settings.sqlServer, m_Settings.sqlDatabase, sUser, sPwd);
+                denSQL.init(sServer, sDatabase, sUser, sPwd);
                 if (!denSQL.hasConnection)
                 {
                     MessageBox.Show("Не найден сервер БД. Проверьте настройки.", "База", MessageBoxButtons.OK, MessageBoxIcon.Error);

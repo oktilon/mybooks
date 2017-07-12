@@ -7,8 +7,10 @@ namespace MyBooks
         public const string ENC_HASH = "ENCRYPTION_HASH";
         public const string ENC_SALT = "ENCRYPTION_SALT_KEY";
         public const string ENC_VIKEY = "ENCRYPTION_VI_KEY";
-		
-		// MySQL Database credentials
+
+        // MySQL Database credentials
+        public const string DB_HOST = "##";
+        public const string DB_BASE = "##";
         public const string DB_USER = "ENCRYPTED_DB_USER_NAME";
         public const string DB_PASS = "ENCRYPTED_DB_USER_PASSWORD";
 		
