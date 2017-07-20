@@ -23,8 +23,9 @@ namespace MyBooks
 		{
 			if (ItemId == 0 || Pnt.Id == 0) return 0;
 			object[] oPar = new object[] { ItemId, Pnt.Id, Cnt };
-			denSQL.Command("DELETE FROM bk_ware WHERE w_item={0} AND w_point={1}", oPar);
-			return denSQL.Command("INSERT INTO bk_ware (w_item, w_point, w_cnt) VALUES ({0},{1},{2})", oPar);
+			return denSQL.Command("INSERT INTO bk_ware VALUES ({0},{1},{2}) " +
+                                "ON DUPLICATE KEY UPDATE " +
+                                "w_cnt = {2}", oPar);
 		}
 		public override string ToString()
 		{

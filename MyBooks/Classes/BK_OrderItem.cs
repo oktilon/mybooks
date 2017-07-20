@@ -13,6 +13,8 @@ namespace MyBooks
         public decimal Count;
         public Unit Unit;
 
+        public bool ItemChanged = false;
+
         public BK_OrderItem() { OrderId = 0; Item = BK_Item.Unset; Price = 0m; Count = 1m; Unit = Unit.getUnit(1); }
 
         public BK_OrderItem(BK_Order ord, CatalogItem ci)
@@ -33,17 +35,19 @@ namespace MyBooks
             Unit = Unit.getUnit(r, "sl_unit");
         }
 
-        public int Store()
+        public int Store(BK_Order o)
         {
+            if (OrderId == 0) OrderId = o.Id;
             string p = Price.ToString(denSQL.Cif_sql);
             string c = Count.ToString(denSQL.Cif_sql);
-            return denSQL.Command("INSERT INTO bk_slist " +
+            int ret = denSQL.Command("INSERT INTO bk_slist " +
                                 "VALUES ({0}, {1}, {2}, {3}, {4}) " +
                                 "ON DUPLICATE KEY UPDATE " +
                                 "sl_prc = {2}," +
                                 "sl_cnt = {3}," +
                                 "sl_unit = {3}",
                                 OrderId, Item.Id, p, c, Unit.Id);
+            Item.updateRemains(o.Point);
         }
 
         public ItemPrice addNewPrice(CatalogItem ci)

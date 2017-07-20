@@ -12,7 +12,7 @@ namespace MyBooks
         public DateTime dtOrder;
         public DateTime dtDeliver;
         public string Number = "";
-        public int Status = 0;
+        public int Status = K_STATUS_PREPARE;
         public decimal Summ = 0m;
         public BK_Point Point;
 
@@ -21,29 +21,29 @@ namespace MyBooks
         public static BK_Order Unknown = new BK_Order();
         public static List<BK_Order> cache = null;
 
+        public const int K_STATUS_PREPARE   = 0;
+        public const int K_STATUS_ORDERED   = 1;
+        public const int K_STATUS_DELIVERED = 2;
+
+        private static string[] m_Statuses = new string[] { "не заказан", "заказан", "выполнен" };
+
         public BK_Order()
         {
-            Id = 0;
             Supplier = new Company();
             dtOrder = Program.DateNone;
             dtDeliver = Program.DateNone;
-            Number = "";
-            Status = 0;
             Point = BK_Point.Unknown;
-            Summ = 0m;
         }
 
         public BK_Order(Company supplier)
         {
             long iOrd = 1 + (long)denSQL.Scalar("SELECT COUNT(*) FROM bk_supply");
-            Id = 0;
             Supplier = supplier;
             dtOrder = Program.DateNone;
             dtDeliver = Program.DateNone;
             Number = string.Format("Заказ №{0}", iOrd);
-            Status = 0;
+            Status = DefaultStatus;
             Point = BK_Point.self;
-            Summ = 0m;
         }
 
         public BK_Order(denSQL.denReader r)
@@ -67,16 +67,19 @@ namespace MyBooks
             t.AddFld("s_number", Number);
             t.AddFld("s_status", Status);
             t.AddFld("s_point", Point.Id);
+            t.AddFld("summ", Total);
             int ret = t.Store(ref Id);
             denSQL.Command("DELETE FROM bk_slist WHERE sl_sup = {0}", Id);
             foreach(BK_OrderItem it in Items)
             {
-                if (it.Item.Id == 0) it.Item.Store();
+                if (it.Item.Id == 0 || it.ItemChanged) it.Item.Store();
                 else if (it.Item.HasPriceChanged) it.Item.storePrices();
-                it.Store();
+                it.Store(this);
             }
             return ret;
         }
+
+        public static int DefaultStatus { get { return K_STATUS_DELIVERED; } }
 
         public void readItems()
         {
@@ -114,24 +117,14 @@ namespace MyBooks
 
         public bool Match(Company sup, bool bUnReady)
         {
-            if (sup.Id == 0) return bUnReady ? (Status < 2) : true;
-            bool ret = sup.Id == Supplier.Id && (bUnReady ? (Status < 2) : true);
+            if (sup.Id == 0) return bUnReady ? (Status < K_STATUS_DELIVERED) : true;
+            bool ret = sup.Id == Supplier.Id && (bUnReady ? (Status < K_STATUS_DELIVERED) : true);
             return ret;
         }
 
-        public string StatusText
-        {
-            get
-            {
-                switch (Status)
-                {
-                    case 0: return "не заказан";
-                    case 1: return "заказан";
-                    case 2: return "выполнен";
-                }
-                return "";
-            }
-        }
+        public static string[] getStatuses() { return m_Statuses; }
+
+        public string StatusText { get { return m_Statuses.ElementAtOrDefault(Status); } }
 
         public static string baseQuery(string sWhere = "", string sOrder = "s_date_order DESC")
         {

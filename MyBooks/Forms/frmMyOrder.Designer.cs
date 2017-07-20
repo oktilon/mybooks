@@ -53,6 +53,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.txtFind = new System.Windows.Forms.TextBox();
             this.lstFind = new System.Windows.Forms.ListBox();
+            this.cbStatus = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.grpCat.SuspendLayout();
             this.grpOrder.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.split)).BeginInit();
@@ -343,11 +345,33 @@
             this.lstFind.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lstFind_MouseClick);
             this.lstFind.KeyUp += new System.Windows.Forms.KeyEventHandler(this.lstFind_KeyUp);
             // 
+            // cbStatus
+            // 
+            this.cbStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbStatus.FormattingEnabled = true;
+            this.cbStatus.Location = new System.Drawing.Point(843, 347);
+            this.cbStatus.Name = "cbStatus";
+            this.cbStatus.Size = new System.Drawing.Size(136, 21);
+            this.cbStatus.TabIndex = 24;
+            // 
+            // label5
+            // 
+            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(751, 350);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(86, 13);
+            this.label5.TabIndex = 25;
+            this.label5.Text = "Статус заказа :";
+            // 
             // frmMyOrder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1178, 380);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.cbStatus);
             this.Controls.Add(this.lstFind);
             this.Controls.Add(this.txtFind);
             this.Controls.Add(this.label3);
@@ -404,5 +428,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtFind;
         private System.Windows.Forms.ListBox lstFind;
+        private System.Windows.Forms.ComboBox cbStatus;
+        private System.Windows.Forms.Label label5;
     }
 }

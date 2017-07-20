@@ -208,6 +208,13 @@ namespace MyBooks
 				Prices.Add(new ItemPrice(this, 1, mt));
 		}
 
+        public void updateRemains(BK_Point p)
+        {
+            // Eval income
+            int cnt = (int)denSQL.Scalar("SELECT 0");
+            // Eval expenses            
+        }
+
         private static string getNextId() { return denSQL.Scalar("SELECT 1+MAX(i_id) FROM bk_items").ToString(); }
 
         public void ResetChangeFlag() { foreach (ItemPrice ip in Prices) ip.HasChanged = false; }

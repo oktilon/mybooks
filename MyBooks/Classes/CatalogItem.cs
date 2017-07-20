@@ -14,6 +14,8 @@ namespace MyBooks
 		public DateTime dtUpdated;
         public BK_Item Item;
 
+        public bool HasChanged = false;
+
         private static CatalogItem Unknown = new CatalogItem();
 
         private static List<CatalogItem> cache = null;
@@ -50,6 +52,18 @@ namespace MyBooks
             Com = sup;
             Item = it;
             dtUpdated = DateTime.Now;
+        }
+
+        public int Store()
+        {
+            denSQL.denTable t = denSQL.CreateTable("bk_cat", "ct_id");
+            t.AddFld("ct_code", Code);
+            t.AddFld("ct_price", Price);
+            t.AddFld("ct_unit", Unit.Id);
+            t.AddFld("ct_updated", dtUpdated);
+            t.AddFld("ct_com", Com.Id);
+            t.AddFld("ct_item", Item.Id);
+            return t.Store(ref Id);
         }
 
         public bool Match(string sFind, Company sup)
@@ -102,7 +116,17 @@ namespace MyBooks
 
         internal void SetPrice(string displayText)
         {
-            decimal.TryParse(displayText, out Price);
+            HasChanged = decimal.TryParse(displayText, out Price);
+        }
+        internal void SetPrice(BK_OrderItem oi)
+        {
+            Price = oi.Price;
+            HasChanged = true;
+        }
+        internal void SetUnit(BK_OrderItem oi)
+        {
+            Unit = oi.Unit;
+            HasChanged = true;
         }
     }
 }

@@ -49,9 +49,10 @@ namespace MyBooks
             m_Order = ord;
             m_Supplier = ord.Supplier;
             txtName.Text = ord.Number;
-            gridCat.SelectionMode = SourceGrid.GridSelectionMode.Row;
+            txtTotal.Text = ord.Total.ToString();
+            gridCat.SelectionMode = GridSelectionMode.Row;
             gridCat.Selection.EnableMultiSelection = false;
-            gridOrder.SelectionMode = SourceGrid.GridSelectionMode.Row;
+            gridOrder.SelectionMode = GridSelectionMode.Row;
             gridOrder.Selection.EnableMultiSelection = false;
             CatalogItem.initCatalog();
             lstCat = CatalogItem.getAll();
@@ -100,7 +101,7 @@ namespace MyBooks
         ItemPrice findPrice(CatalogItem ci, BK_OrderItem oi)
         {
             bNewPrice = false;
-            ItemPrice ip = ci.Item.getPointPrices(BK_Point.self).FirstOrDefault(x => x.Unit.Id == oi.Unit.Id);
+            ItemPrice ip = oi.Item.getPointPrices(BK_Point.self).FirstOrDefault(x => x.Unit.Id == oi.Unit.Id);
             if (ip == null)
             {
                 ip = oi.addNewPrice(ci);
@@ -209,6 +210,8 @@ namespace MyBooks
             {
                 FillOrder();
             }
+            cbStatus.Items.AddRange(BK_Order.getStatuses());
+            cbStatus.SelectedIndex = m_Order.Status;
         }
 
         private void cbSupplier_SelectedIndexChanged(object sender, EventArgs e)
@@ -362,6 +365,7 @@ namespace MyBooks
             {
                 case K_PRC:
                     oi.SetPrice(cntx.DisplayText);
+                    ci.SetPrice(oi);
                     gridOrder[row, K_TOT].Value = oi.Total;
                     if(m_Order.evalMine(oi, ip))
                     {
@@ -372,6 +376,7 @@ namespace MyBooks
 
                 case K_CNT:
                     oi.SetCount(cntx.DisplayText);
+
                     gridOrder[row, K_TOT].Value = oi.Total;
                     txtTotal.Text = m_Order.Total.ToString();
                     break;
@@ -380,6 +385,7 @@ namespace MyBooks
                     Unit u = (Unit)gridOrder[row, K_UNIT].Value;
                     oi.Unit = u;
                     ItemPrice ipn = findPrice(ci, oi);
+                    if (bNewPrice) oi.ItemChanged = true;
                     gridOrder[row, K_MINE].Tag = ipn;
                     if (m_Order.evalMine(oi, ipn))
                     {
@@ -421,6 +427,9 @@ namespace MyBooks
             if(m_MenuRow > 0)
             {
                 gridOrder[m_MenuRow, K_TAB].Value = p;
+                BK_OrderItem oi = (BK_OrderItem)gridOrder.Rows[m_MenuRow].Tag;
+                oi.Item.Tab = p;
+                oi.ItemChanged = true;
             }
             m_MenuRow = 0;
         }
@@ -435,6 +444,14 @@ namespace MyBooks
 
         private void cmdOk_Click(object sender, EventArgs e)
         {
+            m_Order.Number = txtName.Text;
+            m_Order.Status = cbStatus.SelectedIndex;
+            //m_Order.Supplier = (Company)cbSupplier.SelectedItem;
+            for(int r=1; r< gridOrder.RowsCount; r++)
+            {
+                CatalogItem ci = (CatalogItem)gridOrder[r, K_CODE].Tag;
+                if (ci.Id == 0 || ci.HasChanged) ci.Store();
+            }
             m_Order.Store();
         }
     }
