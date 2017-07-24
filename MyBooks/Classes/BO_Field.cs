@@ -39,8 +39,8 @@ namespace MyBooks
 			Param = pPar;
 			if (FlagField) TmpFlagValue = (int)Value;
 		}
-		public bool ReadOnly { get { return Flags.HasBit(1); } set { Flags = Flags.ApplyBit(1, value); } }
-		public bool FlagField { get { return Flags.HasBit(2); } set { Flags = Flags.ApplyBit(2, value); } }
+		public bool ReadOnly { get { return Flags.HasBit(1); } set { Flags = Flags.SetBit(1, value); } }
+		public bool FlagField { get { return Flags.HasBit(2); } set { Flags = Flags.SetBit(2, value); } }
 
 		public List<BO_Flag> FlagList { get { return Param is List<BO_Flag> ? (List<BO_Flag>)Param : new List<BO_Flag>(); } }
 

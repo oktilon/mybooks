@@ -55,7 +55,7 @@ namespace MyBooks
             Number = r.GetString("s_number");
             Status = r.GetInt("s_status");
             Point = BK_Point.getPoint(r, "s_point");
-            Summ = r.GetDecimal("summ");
+            Summ = r.GetDecimal("summ"); // Evaluated
         }
 
         public int Store()
@@ -67,7 +67,6 @@ namespace MyBooks
             t.AddFld("s_number", Number);
             t.AddFld("s_status", Status);
             t.AddFld("s_point", Point.Id);
-            t.AddFld("summ", Total);
             int ret = t.Store(ref Id);
             denSQL.Command("DELETE FROM bk_slist WHERE sl_sup = {0}", Id);
             foreach(BK_OrderItem it in Items)

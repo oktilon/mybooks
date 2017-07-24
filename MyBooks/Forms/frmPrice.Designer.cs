@@ -43,12 +43,12 @@
             this.grid = new SourceGrid.Grid();
             this.split = new System.Windows.Forms.SplitContainer();
             this.split2 = new System.Windows.Forms.SplitContainer();
-            this.label2 = new System.Windows.Forms.Label();
-            this.gridCat = new SourceGrid.Grid();
+            this.lblTop = new System.Windows.Forms.Label();
+            this.gridTop = new SourceGrid.Grid();
             this.cmdBase = new System.Windows.Forms.Button();
             this.cmdMin = new System.Windows.Forms.Button();
-            this.gridUnits = new SourceGrid.Grid();
-            this.label5 = new System.Windows.Forms.Label();
+            this.gridBot = new SourceGrid.Grid();
+            this.lblBot = new System.Windows.Forms.Label();
             this.lblBase = new System.Windows.Forms.Label();
             this.lblMin = new System.Windows.Forms.Label();
             this.cmdDelPrice = new System.Windows.Forms.Button();
@@ -229,47 +229,47 @@
             // 
             // split2.Panel1
             // 
-            this.split2.Panel1.Controls.Add(this.label2);
-            this.split2.Panel1.Controls.Add(this.gridCat);
+            this.split2.Panel1.Controls.Add(this.lblTop);
+            this.split2.Panel1.Controls.Add(this.gridTop);
             // 
             // split2.Panel2
             // 
             this.split2.Panel2.Controls.Add(this.cmdBase);
             this.split2.Panel2.Controls.Add(this.cmdMin);
-            this.split2.Panel2.Controls.Add(this.gridUnits);
-            this.split2.Panel2.Controls.Add(this.label5);
+            this.split2.Panel2.Controls.Add(this.gridBot);
+            this.split2.Panel2.Controls.Add(this.lblBot);
             this.split2.Panel2.Controls.Add(this.lblBase);
             this.split2.Panel2.Controls.Add(this.lblMin);
             this.split2.Size = new System.Drawing.Size(265, 291);
             this.split2.SplitterDistance = 113;
             this.split2.TabIndex = 0;
             // 
-            // label2
+            // lblTop
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(0, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(92, 13);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "Код в каталогах:";
+            this.lblTop.AutoSize = true;
+            this.lblTop.Location = new System.Drawing.Point(0, 0);
+            this.lblTop.Name = "lblTop";
+            this.lblTop.Size = new System.Drawing.Size(92, 13);
+            this.lblTop.TabIndex = 0;
+            this.lblTop.Text = "Код в каталогах:";
             // 
-            // gridCat
+            // gridTop
             // 
-            this.gridCat.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.gridTop.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gridCat.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.gridCat.EnableSort = true;
-            this.gridCat.FixedColumns = 1;
-            this.gridCat.FixedRows = 1;
-            this.gridCat.Location = new System.Drawing.Point(0, 16);
-            this.gridCat.Name = "gridCat";
-            this.gridCat.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
-            this.gridCat.SelectionMode = SourceGrid.GridSelectionMode.Cell;
-            this.gridCat.Size = new System.Drawing.Size(265, 94);
-            this.gridCat.TabIndex = 1;
-            this.gridCat.TabStop = true;
-            this.gridCat.ToolTipText = "";
+            this.gridTop.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.gridTop.EnableSort = true;
+            this.gridTop.FixedColumns = 1;
+            this.gridTop.FixedRows = 1;
+            this.gridTop.Location = new System.Drawing.Point(0, 16);
+            this.gridTop.Name = "gridTop";
+            this.gridTop.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
+            this.gridTop.SelectionMode = SourceGrid.GridSelectionMode.Cell;
+            this.gridTop.Size = new System.Drawing.Size(265, 94);
+            this.gridTop.TabIndex = 1;
+            this.gridTop.TabStop = true;
+            this.gridTop.ToolTipText = "";
             // 
             // cmdBase
             // 
@@ -291,28 +291,28 @@
             this.cmdMin.UseVisualStyleBackColor = true;
             this.cmdMin.Click += new System.EventHandler(this.cmdMin_Click);
             // 
-            // gridUnits
+            // gridBot
             // 
-            this.gridUnits.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.gridUnits.EnableSort = true;
-            this.gridUnits.Location = new System.Drawing.Point(0, 45);
-            this.gridUnits.Name = "gridUnits";
-            this.gridUnits.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
-            this.gridUnits.SelectionMode = SourceGrid.GridSelectionMode.Cell;
-            this.gridUnits.Size = new System.Drawing.Size(265, 131);
-            this.gridUnits.TabIndex = 5;
-            this.gridUnits.TabStop = true;
-            this.gridUnits.ToolTipText = "";
-            this.gridUnits.MouseClick += new System.Windows.Forms.MouseEventHandler(this.gridUnits_MouseClick);
+            this.gridBot.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.gridBot.EnableSort = true;
+            this.gridBot.Location = new System.Drawing.Point(0, 45);
+            this.gridBot.Name = "gridBot";
+            this.gridBot.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
+            this.gridBot.SelectionMode = SourceGrid.GridSelectionMode.Cell;
+            this.gridBot.Size = new System.Drawing.Size(265, 131);
+            this.gridBot.TabIndex = 5;
+            this.gridBot.TabStop = true;
+            this.gridBot.ToolTipText = "";
+            this.gridBot.MouseClick += new System.Windows.Forms.MouseEventHandler(this.gridUnits_MouseClick);
             // 
-            // label5
+            // lblBot
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(0, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(55, 13);
-            this.label5.TabIndex = 0;
-            this.label5.Text = "Единицы:";
+            this.lblBot.AutoSize = true;
+            this.lblBot.Location = new System.Drawing.Point(0, 0);
+            this.lblBot.Name = "lblBot";
+            this.lblBot.Size = new System.Drawing.Size(55, 13);
+            this.lblBot.TabIndex = 0;
+            this.lblBot.Text = "Единицы:";
             // 
             // lblBase
             // 
@@ -581,16 +581,16 @@
         private System.Windows.Forms.ImageList imgl;
         private SourceGrid.Grid grid;
         private System.Windows.Forms.SplitContainer split;
-        private System.Windows.Forms.Label label2;
-        private SourceGrid.Grid gridCat;
+        private System.Windows.Forms.Label lblTop;
+        private SourceGrid.Grid gridTop;
         private System.Windows.Forms.SplitContainer split2;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label lblBot;
 		private System.Windows.Forms.Label lblMin;
 		private System.Windows.Forms.Label lblNameUa;
 		private System.Windows.Forms.TextBox txtNameUa;
 		private System.Windows.Forms.Button cmdDelPrice;
 		private System.Windows.Forms.Button cmdAddPrice;
-		private SourceGrid.Grid gridUnits;
+		private SourceGrid.Grid gridBot;
 		private System.Windows.Forms.Label lblBase;
 		private System.Windows.Forms.Button cmdMin;
 		private System.Windows.Forms.Button cmdBase;

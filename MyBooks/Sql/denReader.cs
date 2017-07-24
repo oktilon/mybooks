@@ -37,6 +37,9 @@ namespace MyBooks
             public bool Good(int i) { return Yes ? !m_rdr.IsDBNull(i) : false; }
             public bool Good(string f) { return Good(m_rdr.GetOrdinal(f)); }
 
+            public bool IsNull(int i) { return Yes ? m_rdr.IsDBNull(i) : true; }
+            public bool IsNull(string f) { return Yes ? IsNull(m_rdr.GetOrdinal(f)) : true; }
+
             public bool HasRows { get { try { return Yes ? m_rdr.HasRows : false; } catch (MySqlException e) { OnErr(e, "HasRows"); return false; } } }
 
             public string GetString(int i, string Def) { try { return Good(i) ? m_rdr.GetString(i) : Def; } catch (MySqlException e) { OnErr(e, "GetString"); return Def; } }

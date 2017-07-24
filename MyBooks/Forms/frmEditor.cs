@@ -220,7 +220,7 @@ namespace MyBooks
 		{
 			CatEdit_Flag cef = (CatEdit_Flag)((ToolStripItem)sender).Tag;
 			BO_Field f = (BO_Field)((SGC.Cell)cef.cntx.Cell).Tag;
-			f.TmpFlagValue = f.TmpFlagValue.ApplyBit(cef.flag.Bit, !f.TmpFlagValue.HasBit(cef.flag.Bit));
+			f.TmpFlagValue = f.TmpFlagValue.SetBit(cef.flag.Bit, !f.TmpFlagValue.HasBit(cef.flag.Bit));
 			cef.cntx.Value = BO_Flag.GetCaption(f);
 			grid_OnEditEnded(cef.cntx, new EventArgs());
 		}

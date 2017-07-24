@@ -18,12 +18,17 @@ namespace MyBooks
 		/// <summary>
 		/// Из скольки базовых единиц изм. состоит
 		/// </summary>
-		public decimal Cnt = 0m;
+		public int Cnt = 0;
 
 		/// <summary>
 		/// Базовая единица измерения
 		/// </summary>
 		public Unit CntUnit = Unit.Unknown;
+
+        /// <summary>
+        /// Из скольки минимальных единиц изм. состоит
+        /// </summary>
+        public int MinCnt = 0;
 
 		// Non storable
 		public bool HasChanged = false;
@@ -33,26 +38,29 @@ namespace MyBooks
 		public ItemUnit(BK_Item it, Unit u)
 		{
 			ItemId = it.Id;
-			Cnt = 1m;
+			Cnt = 1;
 			SubUnit = u;
 			CntUnit = it.MinUnit;
+            MinCnt = 1;
 		}
 		public ItemUnit(denSQL.denReader r)
 		{
 			ItemId = r.GetInt("iu_item");
 			SubUnit = Unit.getUnit(r, "iu_unit");
-			Cnt = r.GetDecimal("iu_rate");
+			Cnt = r.GetInt("iu_rate");
 			CntUnit = Unit.getUnit(r, "iu_rate_unit");
+            MinCnt = r.GetInt("iu_min");
 		}
 		public static void AddDefaultBaseToMin(BK_Item it)
 		{
-			if (it.BaseUnit == it.MinUnit) return;
-			if (it.SubUnits.FirstOrDefault(x => x.SubUnit == it.BaseUnit) != null) return;
+			if (it.DefaultUnit == it.MinUnit) return;
+			if (it.SubUnits.FirstOrDefault(x => x.SubUnit == it.DefaultUnit) != null) return;
 			ItemUnit iu = new ItemUnit();
 			iu.ItemId = it.Id;
-			iu.SubUnit = it.BaseUnit;
-			iu.Cnt = 1m;
+			iu.SubUnit = it.DefaultUnit;
+			iu.Cnt = 1;
 			iu.CntUnit = it.MinUnit;
+            iu.MinCnt = 1;
 			it.SubUnits.Add(iu);
 		}
 		public static ItemUnit Unset = new ItemUnit();

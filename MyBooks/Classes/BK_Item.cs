@@ -11,7 +11,7 @@ namespace MyBooks
 		public string Name = "не указан";
 		public string Short = "н/у";
 		public string NameUa = "не вказано";
-		public Unit BaseUnit = Unit.Unknown;
+		public Unit DefaultUnit = Unit.Unknown;
 		public Unit MinUnit = Unit.Unknown;
 		public Page Tab = Page.NullPage;
 		public int TabPos = 0;
@@ -23,21 +23,27 @@ namespace MyBooks
 		public BK_Format ServiceFormat = BK_Format.Unknown;
         public int Group = 0;
 		public BK_Carrier Carrier = BK_Carrier.NotCarrier;
-        public BK_Device Device = BK_Device.NullDevice;
-		public List<BK_SubItem> SubItems = new List<BK_SubItem>();
+        public List<BK_Device> Devices = new List<BK_Device>();
 		public List<ItemPrice> Prices = new List<ItemPrice>();
 		public List<ItemRemain> Remains = new List<ItemRemain>();
 		public List<ItemUnit> SubUnits = new List<ItemUnit>();
+
+        public BK_Carrier DefaultCarrier = BK_Carrier.NotCarrier;
+        public BK_Device DefaultDevice = BK_Device.NullDevice;
+        public BK_Variant DefaultVariant = BK_Variant.Default;
 
 		public static BK_Item Unset = new BK_Item();
 
         private static List<BK_Item> cache = null;
 
+        const int K_PARAM_IN_USE  = 0x01;
+        const int K_PARAM_SERVICE = 0x02;
+
         public BK_Item() { }
         public BK_Item(denSQL.denReader r) { readSelf(r); }
 
 		/// <summary>
-		/// New 0-Item, 1-Paper, 2-Print
+		/// New 0-Item, 1-Paper, 2-Print, 3-Service
 		/// </summary>
 		/// <param name="iWhat">0-Item, 1-Paper, 2-Print</param>
 		public BK_Item(Page pPage, int iWhat)
@@ -45,7 +51,7 @@ namespace MyBooks
 			Tab = pPage;
 			TabPos = pPage.Grid.RowsCount;
 			Param = 1; // In_use
-			BaseUnit = Unit.getUnit(1); // шт
+			DefaultUnit = Unit.getUnit(1); // шт
 			MinUnit = Unit.getUnit(1); // шт
             string sNewId = getNextId();
 
@@ -84,7 +90,7 @@ namespace MyBooks
             Tab = Page.NullPage;
             //TabPos = Tab.Grid.RowsCount;
             Param = 1; // In_use
-            BaseUnit = Unit.getUnit(1); // шт
+            DefaultUnit = Unit.getUnit(1); // шт
             MinUnit = Unit.getUnit(1); // шт
 
             Name = sName;
@@ -110,14 +116,14 @@ namespace MyBooks
             Ico = BK_Icon.getIcon(r); // i_ico
             Param = r.GetInt("i_param");
             TabPos = r.GetInt("i_pos");
-            BaseUnit = Unit.getUnit(r, "i_unit");
+            DefaultUnit = Unit.getUnit(r, "i_unit");
             MinUnit = Unit.getUnit(r, "i_min_unit");
             ServiceFormat = BK_Format.getFormat(r, "i_fmt");  // i_fmt
             Desc = r.GetString("i_desc");
             Articul = r.GetString("i_art");
             Manufacturer = Company.getCompany(r, "i_man");
             Group = r.GetInt("i_group");
-            Device = BK_Device.getDevice(r, "i_device");
+            DefaultDevice = BK_Device.getDevice(r, "i_device");
             if (r.Good("car_iid")) Carrier = new BK_Carrier(r);
         }
 
@@ -130,31 +136,28 @@ namespace MyBooks
             ReadTables();
         }
 
+
+        public void readRemains()
+        {
+            Remains.Clear();
+            denSQL.denReader r = denSQL.Query("SELECT * FROM bk_ware WHERE w_item={0} ORDER BY w_point", Id);
+            while (r.Read()) Remains.Add(new ItemRemain(r));
+            r.Close();
+        }
+
+        public void readSubUnits()
+        {
+            SubUnits.Clear();
+            denSQL.denReader r = denSQL.Query("SELECT * FROM bk_iunits WHERE iu_item={0} ORDER BY iu_item, iu_unit", Id);
+            while (r.Read()) SubUnits.Add(new ItemUnit(r));
+            r.Close();
+        }
+
         public void ReadTables()
 		{
-			// Prices
-			Prices.Clear();
-			denSQL.denReader r = denSQL.Query("SELECT * FROM bk_price WHERE p_item={0} ORDER BY p_point, p_unit, p_car", Id);
-			while (r.Read()) Prices.Add(new ItemPrice(r));
-			r.Close();
-
-			// Remains
-			Remains.Clear();
-			r = denSQL.Query("SELECT * FROM bk_ware WHERE w_item={0} ORDER BY w_point", Id);
-			while (r.Read()) Remains.Add(new ItemRemain(r));
-			r.Close();
-
-			// SubItems
-			SubItems.Clear();
-			r = denSQL.Query("SELECT * FROM bk_subitem WHERE si_iid={0} ORDER BY si_id", Id);
-			while (r.Read()) SubItems.Add(new BK_SubItem(r));
-			r.Close();
-
-			// SubUnits
-			SubUnits.Clear();
-			r = denSQL.Query("SELECT * FROM bk_iunits WHERE iu_item={0} ORDER BY iu_item, iu_unit", Id);
-			while (r.Read()) SubUnits.Add(new ItemUnit(r));
-			r.Close();
+            ItemPrice.readItemPrices(this);
+            readRemains();
+            readSubUnits();
 		}
 
 		public bool HasPriceChanged
@@ -171,8 +174,8 @@ namespace MyBooks
 		{
 			get
 			{
-				if (SubUnits.Count == 0 && MinUnit == BaseUnit) return 1;
-				if (MinUnit == BaseUnit) return SubUnits.Count + (SubUnits.FirstOrDefault(x => x.SubUnit == BaseUnit) == null ? 1 : 0);
+				if (SubUnits.Count == 0 && MinUnit == DefaultUnit) return 1;
+				if (MinUnit == DefaultUnit) return SubUnits.Count + (SubUnits.FirstOrDefault(x => x.SubUnit == DefaultUnit) == null ? 1 : 0);
 				if (SubUnits.Count == 0) ItemUnit.AddDefaultBaseToMin(this);
 				return SubUnits.Count + 1;
 			}
@@ -187,7 +190,7 @@ namespace MyBooks
                     MinUnit
                 };
                 lst.AddRange(from x in SubUnits select x.SubUnit);
-				if (!lst.Contains(BaseUnit)) { ItemUnit.AddDefaultBaseToMin(this); lst.Add(BaseUnit); }
+				if (!lst.Contains(DefaultUnit)) { ItemUnit.AddDefaultBaseToMin(this); lst.Add(DefaultUnit); }
 				return lst;
 			}
 		}
@@ -210,8 +213,21 @@ namespace MyBooks
 
         public void updateRemains(BK_Point p)
         {
+            // Make units table
+            string sCase = string.Format(" WHEN {0} THEN 1", MinUnit.Id);
+            foreach(ItemUnit u in SubUnits)
+            {
+                sCase += string.Format(" WHEN {0} THEN {1}", u.SubUnit.Id, u.MinCnt);
+            }
+
             // Eval income
-            int cnt = (int)denSQL.Scalar("SELECT 0");
+            object inc = denSQL.Scalar("SELECT SUM(sl_cnt * CASE sl_unit {0} ELSE 0 END) AS s " +
+                                    "FROM bk_slist " +
+                                    "LEFT JOIN bk_supply ON s_id = sl_sup " +
+                                    "WHERE s_status = {1} AND s_point = {2} AND sl_item = {3}",
+                                    sCase, BK_Order.K_STATUS_DELIVERED, p.Id, Id);
+            System.Diagnostics.Debug.WriteLine("Inc={0}, {1}", inc, inc.GetType().Name);
+            
             // Eval expenses            
         }
 
@@ -219,24 +235,14 @@ namespace MyBooks
 
         public void ResetChangeFlag() { foreach (ItemPrice ip in Prices) ip.HasChanged = false; }
 
-		public bool InUse { get { return Param.IsSetBit(1); } set { Param = Param.SetBit(1, value); } }
-		public bool IsService { get { return Param.IsSetBit(2); } set { Param = Param.SetBit(2, value); } }
-		public bool HasSubItems { get { return SubItems.Count > 0; } }
+		public bool InUse { get { return Param.HasBit(K_PARAM_IN_USE); } set { Param = Param.SetBit(K_PARAM_IN_USE, value); } }
+		public bool IsService { get { return Param.HasBit(K_PARAM_SERVICE); } set { Param = Param.SetBit(K_PARAM_SERVICE, value); } }
+		public bool HasVariants { get { return Variants.Count > 0; } }
 		public bool IsCarrier { get { return Carrier != BK_Carrier.NotCarrier; } }
-		public bool UseCarrier { get { return SubItems.Any(x => x.IsCarrier); } }
-		public BK_Carrier DefaultCarrier
-		{
-			get
-			{
-				BK_Carrier ret = BK_Carrier.NotCarrier;
-				foreach (BK_SubItem si in SubItems) if (si.IsCarrier) { ret = si.Sub.Carrier; break; }
-				return ret;
-			}
-		}
 
 		public bool HasUnit(Unit u)
 		{
-			if (MinUnit == u || BaseUnit == u) return true;
+			if (MinUnit == u || DefaultUnit == u) return true;
 			return SubUnits.Any(x => x.SubUnit == u);
 		}
 
@@ -261,13 +267,13 @@ namespace MyBooks
 			t.AddFld("i_ico", Ico.Id);
 			t.AddFld("i_param", Param);
 			t.AddFld("i_pos", TabPos);
-			t.AddFld("i_unit", BaseUnit.Id);
+			t.AddFld("i_unit", DefaultUnit.Id);
 			t.AddFld("i_min_unit", MinUnit.Id);
 			t.AddFld("i_fmt", ServiceFormat.Id);
 			t.AddNul("i_desc", Desc);
 			t.AddNul("i_art", Articul);
 			t.AddFld("i_man", Manufacturer.Id);
-            t.AddFld("i_device", Device.Id);
+            t.AddFld("i_device", DefaultDevice.Id);
 			int ret = t.Store(ref Id);
 			if (Id == 0) return ret;
             storePrices();

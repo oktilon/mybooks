@@ -70,6 +70,7 @@ namespace MyBooks
                     MessageBox.Show("Не найден сервер БД. Проверьте настройки.", "База", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
+                denSQL.errorHandler += new denSQL.SqlErrorHandler(showSqlError);
                 //Command("INSERT INTO bk_string (`key`, `val`) VALUES ('{0:yyyy-MM-dd HH:mm:ss}', 'Перевірка-{0}')", DateTime.Now);
                 T.initLanguage(1);
                 ReadParameters();
@@ -89,6 +90,12 @@ namespace MyBooks
                 }
             }
             catch (Exception ex) { ProceedError(ex, "Не перехваченная ошибка в программе.", false); }
+        }
+
+        private static void showSqlError(Exception ex, string caption, string sql)
+        {
+            string bef = ex.InnerException != null && ex.InnerException.Message != "" ? ("Inner : " + ex.InnerException.Message) : "";
+            frmError.showError(ex, caption, bef, sql);
         }
 
         public static void ReadParameters()
@@ -118,8 +125,8 @@ namespace MyBooks
 		public static bool HasBit(this int @base, int iBit) { return (@base & iBit) == iBit; }
 		public static bool HasBit(this uint @base, int iBit) { return (@base & iBit) == iBit; }
 
-		public static int ApplyBit(this int @base, int iBit, bool bValue) { if (bValue) return @base | iBit; else return @base & ~iBit; }
-		public static uint ApplyBit(this uint @base, int iBit, bool bValue) { if (bValue) return @base | (uint)iBit; else return @base & ~((uint)iBit); }
+        public static int SetBit(this int @base, int iBit, bool bValue) { return bValue ? (@base | iBit) : (@base & ~iBit); }
+        public static uint SetBit(this uint @base, int iBit, bool bValue) { return bValue ? (@base | (uint)iBit) : (@base & ~((uint)iBit)); }
 
         public static void SetHeaders(this SourceGrid.Grid @base, IEnumerable<string> hdr, IEnumerable<int> wd, Boolean bAutoSortOn)
         {
@@ -153,16 +160,6 @@ namespace MyBooks
         /// </summary>
         /// <param name="iSizeMax">Допустимая длина строки</param>
         public static string Truncate(this string @base, int iSizeMax, bool bAddElipsis = false) { return @base.Length > iSizeMax ? (@base.Substring(0, iSizeMax) + (bAddElipsis ? "…" : "")) : @base; }
-
-		public static int SetBit(this int @base, int iBit, bool bValue)
-		{
-			return bValue ? (@base | iBit) : (@base & ~iBit);
-		}
-
-		public static bool IsSetBit(this int @base, int iBit)
-		{
-			return (@base & iBit) == iBit;
-		}
 
         public static Image GetById (this List<BK_Icon> @base, int iId)
         {

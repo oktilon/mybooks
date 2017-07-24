@@ -33,7 +33,7 @@ namespace MyBooks
 		public static BK_SubItem Empty = new BK_SubItem();
 		public bool IsEmpty { get { return Id == 0; } }
 
-		public bool IsCarrier { get { return Param.IsSetBit(TYPE_CARRIER); } set { Param = Param.SetBit(TYPE_CARRIER, value); } }
-		public bool IsInk { get { return Param.IsSetBit(TYPE_INK); } set { Param = Param.SetBit(TYPE_INK, value); } }
+		public bool IsCarrier { get { return Param.HasBit(TYPE_CARRIER); } set { Param = Param.SetBit(TYPE_CARRIER, value); } }
+		public bool IsInk { get { return Param.HasBit(TYPE_INK); } set { Param = Param.SetBit(TYPE_INK, value); } }
 	}
 }

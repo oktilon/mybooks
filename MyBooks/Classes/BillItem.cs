@@ -22,6 +22,7 @@ namespace MyBooks
         /// Item was changed
         /// </summary>
 		public Boolean m_mod = false;
+        public bool Stored = false;
 		public BillItem() { }
 
         /// <summary>
@@ -38,6 +39,7 @@ namespace MyBooks
 			Unit = Unit.getUnit(r);   // unit
 			Car = BK_Carrier.getCarrier(r); // car
             Device = BK_Device.getDevice(r); // dev
+            Stored = true;
         }
 
         /// <summary>
@@ -47,9 +49,22 @@ namespace MyBooks
         {
             //Id = -1;
 			Item = it;
-            Device = it.Device;
+            Device = it.DefaultDevice;
         }
 
+        public void Delete()
+        {
+            if (!Stored) return;
+            denSQL.Command("DELETE FROM bk_list " +
+                    "WHERE bill={0}, item={1}, unit={2}, car={3}",
+                        BillId, Item.Id, Unit.Id, Car.ItemId);
+        }
+
+        public void Save()
+        {
+            denSQL.denTable t = denSQL.CreateTable("bk_list", "");
+            //int r = denSQL.Command("INSERT INTO");
+        }
 
         public Boolean IsChanged { get { return m_mod; } set { m_mod = value; } }
         public decimal Summ { get { return Price * Count; } }

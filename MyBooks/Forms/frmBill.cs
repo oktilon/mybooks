@@ -91,8 +91,8 @@ namespace MyBooks
 			cmdPrint.Visible = !m_EditPriceMode;
 			chkReportViewer.Visible = !m_EditPriceMode;
 			gridBill.Visible = !m_EditPriceMode;
-			label1.Visible = !m_EditPriceMode;
-			label3.Visible = !m_EditPriceMode;
+			lblTot.Visible = !m_EditPriceMode;
+			lblCash.Visible = !m_EditPriceMode;
 			lblTotal.Visible = !m_EditPriceMode;
 			textCash.Visible = !m_EditPriceMode;
 			lblBack.Visible = !m_EditPriceMode;
@@ -164,7 +164,7 @@ namespace MyBooks
 				if (bFromList)
 					ip = prc.FirstOrDefault(x => x.Carrier == bi.Car);
 				else
-					ip = prc.FirstOrDefault(x => x.Unit == it.BaseUnit && x.Carrier == it.DefaultCarrier);
+					ip = prc.FirstOrDefault(x => x.Unit == it.DefaultUnit && x.Carrier == it.DefaultCarrier);
 				if (ip == null) ip = prc.First();
 			}
 

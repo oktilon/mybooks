@@ -10,12 +10,12 @@ namespace MyBooks
         public int OrderId;
         public BK_Item Item;
         public decimal Price;
-        public decimal Count;
+        public int Count;
         public Unit Unit;
 
         public bool ItemChanged = false;
 
-        public BK_OrderItem() { OrderId = 0; Item = BK_Item.Unset; Price = 0m; Count = 1m; Unit = Unit.getUnit(1); }
+        public BK_OrderItem() { OrderId = 0; Item = BK_Item.Unset; Price = 0m; Count = 1; Unit = Unit.getUnit(1); }
 
         public BK_OrderItem(BK_Order ord, CatalogItem ci)
         {
@@ -31,7 +31,7 @@ namespace MyBooks
             OrderId = r.GetInt("sl_sup");
             Item = BK_Item.getItem(r, "sl_item");
             Price = r.GetDecimal("sl_prc");
-            Count = r.GetDecimal("sl_cnt");
+            Count = r.GetInt("sl_cnt");
             Unit = Unit.getUnit(r, "sl_unit");
         }
 
@@ -48,6 +48,7 @@ namespace MyBooks
                                 "sl_unit = {3}",
                                 OrderId, Item.Id, p, c, Unit.Id);
             Item.updateRemains(o.Point);
+            return ret;
         }
 
         public ItemPrice addNewPrice(CatalogItem ci)
@@ -65,7 +66,7 @@ namespace MyBooks
         }
         internal void SetCount(string displayText)
         {
-            decimal.TryParse(displayText, out Count);
+            int.TryParse(displayText, out Count);
         }
 
     }

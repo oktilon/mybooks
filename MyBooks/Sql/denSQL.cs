@@ -27,7 +27,7 @@ namespace MyBooks
         public bool IsConnectedRelay = false;
 
 
-        public delegate void SqlErrorHandler(Exception ex, string message, string sql);
+        public delegate void SqlErrorHandler(Exception ex, string caption, string sql);
         public delegate void SqlLogHandler(string sLine);
 
         private static denSQL m_dn_sql = null;
@@ -148,7 +148,7 @@ namespace MyBooks
                 if ((sqlTrans = sqlConn.BeginTransaction(DataLockLevel)) == null) return false;
                 return true;
             }
-            catch (MySqlException e) { denSQL.ProceedErrorSql(e, "denSQL.BeginTransaction"); return false; }
+            catch (MySqlException e) { ProceedErrorSql(e, "denSQL.BeginTransaction"); return false; }
 
         }
 
@@ -163,7 +163,7 @@ namespace MyBooks
                     sqlTrans = null;
                 }
             }
-            catch (MySqlException e) { denSQL.ProceedErrorSql(e, "denSQL.RollbackTransaction"); }
+            catch (MySqlException e) { ProceedErrorSql(e, "denSQL.RollbackTransaction"); }
         }
 
         public void CommitTransaction()
@@ -177,7 +177,7 @@ namespace MyBooks
                     sqlTrans = null;
                 }
             }
-            catch (MySqlException e) { denSQL.ProceedErrorSql(e, "denSQL.CommitTransaction"); }
+            catch (MySqlException e) { ProceedErrorSql(e, "denSQL.CommitTransaction"); }
         }
 
         public object ExecuteScalar(string sqlCommand)
@@ -191,7 +191,7 @@ namespace MyBooks
                 ret = sqlCmd.ExecuteScalar();
                 return ret;
             }
-            catch (MySqlException e) { denSQL.ProceedErrorSql(e, "denSQL.ExecuteScalar", sqlCommand); return null; }
+            catch (MySqlException e) { ProceedErrorSql(e, "denSQL.ExecuteScalar", sqlCommand); return null; }
         }
 
         public int ExecuteNonQuery(string sqlCommand)
@@ -206,7 +206,7 @@ namespace MyBooks
 #endif
                 return sqlCmd.ExecuteNonQuery();
             }
-            catch (MySqlException e) { denSQL.ProceedErrorSql(e, "denSQL.ExecuteNonQuery", sqlCommand); return 0; }
+            catch (MySqlException e) { ProceedErrorSql(e, "denSQL.ExecuteNonQuery", sqlCommand); return 0; }
         }
 
         public denReader ExecuteReader(string sqlCommand)
@@ -228,7 +228,7 @@ namespace MyBooks
             return rd;
         }
 
-        public static denTable CreateTable(string sName, string sId) { return new denTable(sName, sId, m_sql); }
+        public static denTable CreateTable(string sName, string sId = "") { return new denTable(sName, sId, m_sql); }
 
         public static denReader Query(string sFmt, params object[] oPar) {
             string sql_cmd = oPar != null ? string.Format(Cif_sql, sFmt, oPar) : sFmt;

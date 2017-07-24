@@ -37,10 +37,10 @@
             this.cmdSave = new System.Windows.Forms.Button();
             this.gridBill = new SourceGrid.Grid();
             this.textCash = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblTot = new System.Windows.Forms.Label();
             this.lblTotal = new System.Windows.Forms.Label();
             this.lblBack = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
+            this.lblCash = new System.Windows.Forms.Label();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdPrint = new System.Windows.Forms.Button();
             this.rptView = new Microsoft.Reporting.WinForms.ReportViewer();
@@ -131,15 +131,15 @@
             this.textCash.Enter += new System.EventHandler(this.textCash_Enter);
             this.textCash.MouseHover += new System.EventHandler(this.textCash_MouseHover);
             // 
-            // label1
+            // lblTot
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 401);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(50, 13);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "ИТОГО :";
+            this.lblTot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTot.AutoSize = true;
+            this.lblTot.Location = new System.Drawing.Point(8, 401);
+            this.lblTot.Name = "lblTot";
+            this.lblTot.Size = new System.Drawing.Size(50, 13);
+            this.lblTot.TabIndex = 2;
+            this.lblTot.Text = "ИТОГО :";
             // 
             // lblTotal
             // 
@@ -167,15 +167,15 @@
             this.lblBack.Text = "-";
             this.lblBack.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label3
+            // lblCash
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(140, 401);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(30, 13);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Нал:";
+            this.lblCash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCash.AutoSize = true;
+            this.lblCash.Location = new System.Drawing.Point(140, 401);
+            this.lblCash.Name = "lblCash";
+            this.lblCash.Size = new System.Drawing.Size(30, 13);
+            this.lblCash.TabIndex = 4;
+            this.lblCash.Text = "Нал:";
             // 
             // cmdCancel
             // 
@@ -325,8 +325,8 @@
             this.SplitV.Panel2.Controls.Add(this.gridBill);
             this.SplitV.Panel2.Controls.Add(this.lblBack);
             this.SplitV.Panel2.Controls.Add(this.textCash);
-            this.SplitV.Panel2.Controls.Add(this.label1);
-            this.SplitV.Panel2.Controls.Add(this.label3);
+            this.SplitV.Panel2.Controls.Add(this.lblTot);
+            this.SplitV.Panel2.Controls.Add(this.lblCash);
             this.SplitV.Panel2.Controls.Add(this.lblTotal);
             this.SplitV.Size = new System.Drawing.Size(870, 418);
             this.SplitV.SplitterDistance = 544;
@@ -373,10 +373,10 @@
         private SourceGrid.Grid gridBill;
         private System.Windows.Forms.Button cmdSave;
         private System.Windows.Forms.TextBox textCash;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblTot;
         private System.Windows.Forms.Label lblTotal;
         private System.Windows.Forms.Label lblBack;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblCash;
 		private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdPrint;
         private Microsoft.Reporting.WinForms.ReportViewer rptView;

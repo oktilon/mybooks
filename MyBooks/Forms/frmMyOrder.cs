@@ -387,10 +387,8 @@ namespace MyBooks
                     ItemPrice ipn = findPrice(ci, oi);
                     if (bNewPrice) oi.ItemChanged = true;
                     gridOrder[row, K_MINE].Tag = ipn;
-                    if (m_Order.evalMine(oi, ipn))
-                    {
-                        gridOrder[row, K_MINE].Value = ipn.Prc;
-                    }
+                    m_Order.evalMine(oi, ipn);
+                    gridOrder[row, K_MINE].Value = ipn.Prc;
                     txtTotal.Text = m_Order.Total.ToString();
                     break;
 

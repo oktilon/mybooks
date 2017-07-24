@@ -38,6 +38,7 @@ namespace MyBooks
 		{
 			InitializeComponent();
 			m_Item = bi;
+            if (bi == null) return;
 			cbIcon.Items.AddRange(BK_Icon.getAll().ToArray());
 			imgl.Images.AddRange((from x in BK_Icon.getAll() orderby x.Id select x.Image).ToArray());
 			Color clrSelect = Color.AliceBlue;
@@ -58,47 +59,52 @@ namespace MyBooks
             };
             rhUnit.Background = rhR;
 			rhUnit.TextAlignment = DevAge.Drawing.ContentAlignment.MiddleRight;
-            gridCat.SetHeaders(new string[] { "Код", "Поставщик", "Цена", "Ед." }, new int[] { 0, 0, 0, 0 }, false);
-            gridUnits.SetHeaders(new string[] { "Доп.ед.", "Кол.", "Баз.ед." }, new int[] { 0, 0, 0 }, false);
-			frmPriceGridEvents ctrlEventsPrc = new frmPriceGridEvents(this, "price");
-			grid.Controller.AddController(ctrlEventsPrc);
-            frmPriceGridEvents ctrlEventsUnit = new frmPriceGridEvents(this, "unit");
-            gridUnits.Controller.AddController(ctrlEventsUnit);
+
+            frmPriceGridEvents ctrlEventsTop;
+            frmPriceGridEvents ctrlEventsBot;
+            if (m_Item.IsService)
+            {
+                lblTop.Text = "Варианты:";
+                gridTop.SetHeaders(new string[] { "Наимен.", "Кол.", "Ед.", "Парам." }, new int[] { 0, 0, 0, 0 }, false);
+                ctrlEventsTop = new frmPriceGridEvents(this, "sub");
+                lblBot.Text = "Устройства:";
+                gridBot.SetHeaders(new string[] { "Устройство", "Расход", "По.умолч." }, new int[] { 0, 0, 0 }, false);
+                ctrlEventsBot = new frmPriceGridEvents(this, "dev");
+            }
+            else
+            {
+                lblTop.Text = "Код в каталогах:";
+                gridTop.SetHeaders(new string[] { "Код", "Поставщик", "Цена", "Ед." }, new int[] { 0, 0, 0, 0 }, false);
+                ctrlEventsTop = new frmPriceGridEvents(this, "cat");
+                lblBot.Text = "Единицы измерения:";
+                gridBot.SetHeaders(new string[] { "Доп.ед.", "Кол.", "Баз.ед." }, new int[] { 0, 0, 0 }, false);
+                ctrlEventsBot = new frmPriceGridEvents(this, "unit");
+            }
+            gridTop.Controller.AddController(ctrlEventsTop);
+            gridBot.Controller.AddController(ctrlEventsBot);
+
+            frmPriceGridEvents ctrlEventsPrc = new frmPriceGridEvents(this, "price");
+            grid.Controller.AddController(ctrlEventsPrc);            
 		}
 
 		private void frmPrice_Load(object sender, EventArgs e)
 		{
-			if (m_Item == null) { DialogResult = System.Windows.Forms.DialogResult.Cancel; Close(); return; }
+			if (m_Item == null) { DialogResult = DialogResult.Cancel; Close(); return; }
 
-            vRight = new Sgc.Views.Cell()
-            {
-                TextAlignment = DevAge.Drawing.ContentAlignment.MiddleRight
-            };
-            vLeft = new Sgc.Views.Cell()
-            {
-                TextAlignment = DevAge.Drawing.ContentAlignment.MiddleLeft
-            };
+            vRight = new Sgc.Views.Cell() { TextAlignment = DevAge.Drawing.ContentAlignment.MiddleRight };
+            vLeft = new Sgc.Views.Cell() { TextAlignment = DevAge.Drawing.ContentAlignment.MiddleLeft };
             Text += string.Format(" (Id:{0})", m_Item.Id);
 
-            eMoney = new Sgc.Editors.TextBoxCurrency(typeof(decimal))
-            {
-                CultureInfo = Program.m_cif
-            };
+            eMoney = new Sgc.Editors.TextBoxCurrency(typeof(decimal)) { CultureInfo = Program.m_cif };
             eMoneyRO = new Sgc.Editors.TextBoxCurrency(typeof(decimal))
             {
                 CultureInfo = Program.m_cif,
                 EditableMode = SourceGrid.EditableMode.None
             };
-            eDecimal = new Sgc.Editors.TextBoxNumeric(typeof(decimal))
-            {
-                CultureInfo = Program.m_cif
-            };
+            eDecimal = new Sgc.Editors.TextBoxNumeric(typeof(decimal)) { CultureInfo = Program.m_cif };
             eCons = new Sgc.Editors.TextBoxNumeric(typeof(int));
             //eCons.CultureInfo = Program.m_cif;
-            eUnit = new Sgc.Editors.TextBox(typeof(Unit))
-            {
-                EditableMode = SourceGrid.EditableMode.None
-            };
+            eUnit = new Sgc.Editors.TextBox(typeof(Unit)) { EditableMode = SourceGrid.EditableMode.None };
             eUnit.ConvertingValueToDisplayString += eUnit_ConvertingValueToDisplayString;
 			txtName.Text = m_Item.Name;
 			txtShort.Text = m_Item.Short;
@@ -107,39 +113,44 @@ namespace MyBooks
 			chkUse.Checked = m_Item.InUse;
 			//
 			lblType.Text = m_Item.TypeCaption;
-			lblFmt.Enabled = m_Item.IsService || m_Item.IsCarrier;
-			cmdFmt.Enabled = m_Item.IsService || m_Item.IsCarrier;
+			lblFmt.Visible = m_Item.IsService || m_Item.IsCarrier;
+			cmdFmt.Visible = m_Item.IsService || m_Item.IsCarrier;
 			if (m_Item.IsCarrier)
 			{
 				lblDen.Visible = true;
 				cmdDen.Visible = true;
-				lblSurf.Visible = m_Item.IsCarrier;
-				cmdSurf.Visible = m_Item.IsCarrier;
+				lblSurf.Visible = true;
+				cmdSurf.Visible = true;
 				m_Item.Carrier.Density.SetButton(cmdDen);
 				m_Item.Carrier.Surface.SetButton(cmdSurf);
 				m_Item.Carrier.Format.SetButton(cmdFmt);
 			}
-			else
-				m_Item.ServiceFormat.SetButton(cmdFmt);
+            if (m_Item.IsService)
+            {
+                m_Item.ServiceFormat.SetButton(cmdFmt);
+            }
 
             lblDevice.Visible = m_Item.IsService;
             cmdDevice.Visible = m_Item.IsService;
-            m_Item.Device.SetButton(cmdDevice);
+            m_Item.DefaultDevice.SetButton(cmdDevice);
 
-            cmdMin.Enabled = !m_Item.IsService;
-            cmdBase.Enabled = !m_Item.IsService;
-            gridUnits.Visible = !m_Item.IsService;
+            lblMin.Visible = !m_Item.IsService;
+            cmdMin.Visible = !m_Item.IsService;
+            lblBase.Visible = !m_Item.IsService;
+            cmdBase.Visible = !m_Item.IsService;
+            gridBot.Top = m_Item.IsService ? 16 : 45;
+            //gridBot.Height 
 
             lblVen.Visible = !m_Item.IsService;
             cmdVen.Visible = !m_Item.IsService;
             m_Item.Manufacturer.SetButton(cmdVen);
 			//
 			m_Item.MinUnit.SetButton(cmdMin);
-			m_Item.BaseUnit.SetButton(cmdBase);
+			m_Item.DefaultUnit.SetButton(cmdBase);
 			BK_Icon bki = m_Item.Ico;
 			if (!cbIcon.Items.Contains(bki)) cbIcon.Items.Add(bki);
 			cbIcon.SelectedItem = bki;
-			if (m_Item.MinUnit != m_Item.BaseUnit) ItemUnit.AddDefaultBaseToMin(m_Item);
+			if (m_Item.MinUnit != m_Item.DefaultUnit) ItemUnit.AddDefaultBaseToMin(m_Item);
 			FillPrices();
 			FillCatalogs();
 			FillUnits();
@@ -195,27 +206,27 @@ namespace MyBooks
 
 		private void FillCatalogs()
 		{
-			gridCat.Redim(1, 4);
+			gridTop.Redim(1, 4);
 			int iRow = 1;
 			denSQL.denReader r = denSQL.Query("SELECT ct_id, ct_code, ct_com, ct_price, ct_unit FROM bk_cat WHERE ct_item={0}", m_Item.Id);
 			while (r.Read())
 			{
-				gridCat.Rows.Insert(iRow);
-				gridCat.Rows[iRow].Tag = r.GetInt(0);
+				gridTop.Rows.Insert(iRow);
+				gridTop.Rows[iRow].Tag = r.GetInt(0);
 				Company cp = Company.getCompany(r, "ct_com");
 				Unit u = Unit.getUnit(r, "ct_unit");
 
-                gridCat[iRow, 0] = new Sgc.RowHeader(r.GetString(1))
+                gridTop[iRow, 0] = new Sgc.RowHeader(r.GetString(1))
                 {
                     View = rh
                 };
-                gridCat[iRow, 1] = new Sgc.Cell(cp.Name);
+                gridTop[iRow, 1] = new Sgc.Cell(cp.Name);
 
-                gridCat[iRow, 2] = new Sgc.Cell(r.GetDecimal(3), eMoneyRO)
+                gridTop[iRow, 2] = new Sgc.Cell(r.GetDecimal(3), eMoneyRO)
                 {
                     View = vRight
                 };
-                gridCat[iRow, 3] = new Sgc.Cell(u);
+                gridTop[iRow, 3] = new Sgc.Cell(u);
 				iRow++;
 			}
 			r.Close();
@@ -223,23 +234,23 @@ namespace MyBooks
 
 		private void FillUnits()
 		{
-			gridUnits.Redim(1, 3);
+			gridBot.Redim(1, 3);
 			int iRow = 0;
 			foreach (ItemUnit iu in m_Item.SubUnits)
 			{
-				gridUnits.Rows.Insert(++iRow);
-				gridUnits.Rows[iRow].Tag = iu;
+				gridBot.Rows.Insert(++iRow);
+				gridBot.Rows[iRow].Tag = iu;
 
-                gridUnits[iRow, 0] = new Sgc.RowHeader(iu.SubUnit)
+                gridBot[iRow, 0] = new Sgc.RowHeader(iu.SubUnit)
                 {
                     View = rh,
                     Editor = eUnit
                 };
-                gridUnits[iRow, 1] = new Sgc.Cell(iu.Cnt, eDecimal)
+                gridBot[iRow, 1] = new Sgc.Cell(iu.Cnt, eDecimal)
                 {
                     View = vRight
                 };
-                gridUnits[iRow, 2] = new Sgc.Cell(iu.CntUnit);
+                gridBot[iRow, 2] = new Sgc.Cell(iu.CntUnit);
 			}
 		}
 
@@ -253,12 +264,12 @@ namespace MyBooks
 					ip.Prc = (decimal)grid[i, 2].Value;
 				}
 			}
-			if (gridUnits.RowsCount > 1)
+			if (gridBot.RowsCount > 1)
 			{
-				for (int i = 1; i < gridUnits.RowsCount; i++)
+				for (int i = 1; i < gridBot.RowsCount; i++)
 				{
-					ItemUnit iu = (ItemUnit)gridUnits.Rows[i].Tag;
-					iu.Cnt = (decimal)gridUnits[i, 1].Value;
+					ItemUnit iu = (ItemUnit)gridBot.Rows[i].Tag;
+					iu.Cnt = (int)gridBot[i, 1].Value;
 				}
 			}
 			m_Item.Name = txtName.Text;
@@ -267,7 +278,7 @@ namespace MyBooks
 			m_Item.Articul = txtArt.Text;
 			m_Item.InUse = chkUse.Checked;
 			m_Item.Ico = (BK_Icon)cbIcon.SelectedItem;
-			m_Item.BaseUnit = (Unit)cmdBase.Tag;
+			m_Item.DefaultUnit = (Unit)cmdBase.Tag;
 			m_Item.MinUnit = (Unit)cmdMin.Tag;
 			if (m_Item.IsCarrier)
 			{
@@ -279,7 +290,7 @@ namespace MyBooks
 				m_Item.ServiceFormat = (BK_Format)cmdFmt.Tag;
             if(m_Item.IsService)
             {
-                m_Item.Device = (BK_Device)cmdDevice.Tag;
+                m_Item.DefaultDevice = (BK_Device)cmdDevice.Tag;
             }
 
 			m_Item.Manufacturer = (Company)cmdVen.Tag;
@@ -337,7 +348,7 @@ namespace MyBooks
 
         public void Grid_OnMouseUp(SourceGrid.CellContext cntx, string tag, MouseEventArgs e)
 		{
-			if (cntx.Grid == gridUnits)
+			if (cntx.Grid == gridBot)
 			{
 				bGridUnits_Click = false;
 				if (cntx.Position.IsEmpty()) return;
@@ -434,7 +445,7 @@ namespace MyBooks
 				foreach (Unit u in Unit.getAll())
 					if (!m_Item.HasUnit(u)) cms.Items.Add(u.Name, RsRc.Add16, Menu_AddUnitClick).Tag = u;
 				if (cms.Items.Count == 0) return;
-				cms.Show(gridUnits, gridUnits.PointToClient(MousePosition));
+				cms.Show(gridBot, gridBot.PointToClient(MousePosition));
 			}
 		}
 

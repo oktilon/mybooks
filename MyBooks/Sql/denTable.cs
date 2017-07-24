@@ -92,7 +92,7 @@ namespace MyBooks
                     logHandler?.Invoke(string.Format("{0:dd.MM.yyyy HH:mm:ss}: {1}", DateTime.Now, cmd.CommandText));
                     return cmd.ExecuteNonQuery();
                 }
-                catch (MySqlException ex) { errorHandler?.Invoke(ex, "", cmd != null ? cmd.CommandText : ""); return 0; }
+                catch (MySqlException ex) { errorHandler?.Invoke(ex, "denTable.Update", cmd != null ? cmd.CommandText : ""); return 0; }
             }
 
             private int Insert(ref int Id)
@@ -117,7 +117,36 @@ namespace MyBooks
                     i = cmd.ExecuteNonQuery();
                     if (i > 0) Id = (int)cmd.LastInsertedId;
                 }
-                catch (MySqlException ex) { errorHandler?.Invoke(ex, "", cmd != null ? cmd.CommandText : ""); }
+                catch (MySqlException ex) { errorHandler?.Invoke(ex, "denTable.Insert", cmd != null ? cmd.CommandText : ""); }
+                return i;
+            }
+
+            private int InsertUpdate()
+            {
+                MySqlCommand cmd = null;
+                int i = 0;
+                try
+                {
+                    string f = "";
+                    string v = "";
+                    string u = "";
+                    foreach (KeyValuePair<string, string> fv in Fields)
+                    {
+                        v += (v == "" ? "" : ", ") + (IsParam.Contains(fv.Key) ? ("@" + fv.Key) : fv.Value);
+                        f += (f == "" ? "" : ", ") + fv.Key;
+                        u += (u == "" ? "" : ", ") + fv.Key + "=" + (IsParam.Contains(fv.Key) ? ("@" + fv.Key) : fv.Value);
+                    }
+                    cmd = new MySqlCommand("INSERT INTO " + sTblName + " (" + f + ") " +
+                                            "VALUES (" + v + ")" +
+                                            "ON DUPLICATE KEY UPDATE " + u, m_sql.sqlConn);
+                    if (cmd == null) return 0;
+                    foreach (string sP in IsParam)
+                        cmd.Parameters.AddWithValue("@" + sP, Fields[sP]);
+
+                    logHandler?.Invoke(string.Format("{0:dd.MM.yyyy HH:mm:ss}: {1}", DateTime.Now, cmd.CommandText));
+                    i = cmd.ExecuteNonQuery();
+                }
+                catch (MySqlException ex) { errorHandler?.Invoke(ex, "denTable.InsertUpdate", cmd != null ? cmd.CommandText : ""); }
                 return i;
             }
 
@@ -162,6 +191,20 @@ namespace MyBooks
                     if (Id == 0)
                         return Insert(ref i);
                     return Update(Id, true);
+                }
+            }
+
+            public int Store()
+            {
+                if (Fields.Count == 0) return 0;
+                if (m_sql == null) return 0;
+                if (!m_sql.IsConnected) return 0;
+                if (m_sql.ReadOnly) return 0;
+
+                lock (m_sql.sqlConn)
+                {
+                    if (!m_sql.TestConnection()) return 0;
+                    return InsertUpdate();
                 }
             }
 

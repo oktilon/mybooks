@@ -11,6 +11,7 @@ namespace MyBooks
 		public BK_Point Pnt = BK_Point.self;
 		public Unit Unit = Unit.Unknown;
 		public BK_Carrier Carrier = BK_Carrier.NotCarrier;
+        public BK_Variant Variant = BK_Variant.Default;
 		public decimal Prc = 0m;
         public int Consumption = 0;
 		// Non storable
@@ -64,6 +65,26 @@ namespace MyBooks
                                 "p_prc = {4}," +
                                 "p_car_cnt = {5}", oPar);
 		}
+
+        public static void readItemPrices(BK_Item it)
+        {
+            it.Prices.Clear();
+            denSQL.denReader r = denSQL.Query("SELECT * FROM bk_price " +
+                        "LEFT JOIN bk_variant ON v_id = p_var " +
+                        "WHERE p_item={0} ORDER BY p_point, p_unit, p_car, p_var", it.Id);
+            while (r.Read())
+            {
+                ItemPrice ip = new ItemPrice(r);
+                if (!r.IsNull("v_id"))
+                {
+                    ip.Variant = new BK_Variant(r);
+                    if (ip.Variant.isDefault) it.DefaultVariant = ip.Variant;
+                }
+                it.Prices.Add(ip);
+            }
+            r.Close();
+        }
+
 
         public int CalculateRemain()
         {

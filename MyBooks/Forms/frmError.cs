@@ -16,11 +16,13 @@ namespace MyBooks
             InitializeComponent();
         }
 
-        public static void showError(Exception ex, string sCaption) {
+        public static void showError(Exception ex, string sCaption, string sBefore = "", string sAfter = "") {
             frmError frm = new frmError();
             frm.Text = sCaption;
             frm.txError.Text = ex.Message;
-            frm.txStack.Text = ex.StackTrace;
+            string be = sBefore.Length > 0 ? (sBefore + "\r\n") : "";
+            string af = sAfter.Length > 0 ? ("\r\n" + sAfter) : "";
+            frm.txStack.Text = be + ex.StackTrace + af;
             frm.ShowDialog();
         }
 
