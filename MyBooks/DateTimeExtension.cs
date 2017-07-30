@@ -1,29 +1,8 @@
 ﻿using System;
-using System.Windows.Forms;
 
 namespace MyBooks
 {
-
-
-    public class BillEventArgs
-	{
-		public BillEventArgs(Bill b) { Bill = b; }
-		public Bill Bill { get; private set; } // readonly
-	}
-
-	public class DenMonth
-	{
-		static String[] sGen = { "января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря" };
-		public static String GenitiveCase(int iMonth)
-		{
-			int i = iMonth - 1;
-			if (i < 0) i = 0;
-			if (i > 11) i = 11;
-			return sGen[i];
-		}
-	}
-
-	public static class DateTimeExtension
+    public static class DateTimeExtension
 	{
 		/// <summary>Get the week number of a certain date, provided that
 		/// the first day of the week is Monday, the first week of a year
@@ -128,44 +107,6 @@ namespace MyBooks
 				date = date.AddDays(1);
 			return date.AddDays(-1);
 		}
-	}
-
-	public class ContextTag : IBkTag
-	{
-		private SourceGrid.CellContext cntx;
-		private IBkObject ibo;
-		private Type type;
-		private EventHandler OnDone;
-		public ContextTag(SourceGrid.CellContext c, IBkObject o, Type t = null, EventHandler ev = null) { cntx = c; ibo = o; type = t; OnDone = ev; }
-		public void Apply() { cntx.Value = ibo; OnDone?.Invoke(this, new EventArgs()); }
-		public void Make()
-		{
-			if (type == null) return;
-			System.Reflection.ConstructorInfo ci = type.GetConstructor(new Type[] { });
-			ibo = (IBkObject)ci.Invoke(new object[] { });
-			if (!ibo.I_OnNew()) return;
-			Apply();
-		}
-		public void Edit() { if (ibo.I_Edit()) Apply(); }
-	}
-
-	public class ButtonTag : IBkTag
-	{
-		private Button btn;
-		private IBkObject ibo;
-		private Type type;
-		private EventHandler OnDone;
-		public ButtonTag(Button b, IBkObject o, Type t = null, EventHandler ev = null) { btn = b; ibo = o; type = t; OnDone = ev; }
-		public void Apply() { btn.Tag = ibo; btn.Text = ibo.I_Short; OnDone?.Invoke(this, new EventArgs()); }
-		public void Make()
-		{
-			if (type == null) return;
-			System.Reflection.ConstructorInfo ci = type.GetConstructor(new Type[] { });
-			ibo = (IBkObject)ci.Invoke(new object[] { });
-			if (!ibo.I_OnNew()) return;
-			Apply();
-		}
-		public void Edit() { if (ibo.I_Edit()) Apply(); }
 	}
 }
 

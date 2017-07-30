@@ -16,6 +16,7 @@ namespace MyBooks
 		public BK_Item Item = BK_Item.Unset;
 		public BK_Carrier Car = BK_Carrier.NotCarrier;
         public BK_Device Device = BK_Device.NullDevice;
+        public BK_Variant Variant = BK_Variant.Default;
 		public Unit Unit = Unit.Unknown;
 		public int BillId = 0;
         /// <summary>
@@ -39,6 +40,7 @@ namespace MyBooks
 			Unit = Unit.getUnit(r);   // unit
 			Car = BK_Carrier.getCarrier(r); // car
             Device = BK_Device.getDevice(r); // dev
+            Variant = BK_Variant.getVariant(r); // var
             Stored = true;
         }
 

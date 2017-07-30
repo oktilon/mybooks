@@ -113,6 +113,7 @@ namespace MyBooks
             BK_Point.initPoints();
             Page.initPages();
             BK_Item.initItems();
+            BK_Variant.initVariants();
         }
 
         static void RunMainForm()

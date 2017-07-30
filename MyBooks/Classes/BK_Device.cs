@@ -19,6 +19,8 @@ namespace MyBooks
 
         public static BK_Device NullDevice = new BK_Device();
 
+        const int K_DEV_DEFAULT = 0x01;
+
 
         public BK_Device() { }
         public BK_Device(denSQL.denReader r)
@@ -40,6 +42,8 @@ namespace MyBooks
             return t.Store(ref Id);
         }
 
+        public bool IsNull {  get { return Id == 0; } }
+
         public static void initDevices()
         {
             cache = new List<BK_Device>();
@@ -60,6 +64,20 @@ namespace MyBooks
         }
 
         public static List<BK_Device> getAll() { return cache; }
+
+        public static void getItemDevices(BK_Item i)
+        {
+            i.Devices.Clear();
+            denSQL.denReader r = denSQL.Query("SELECT * FROM bk_item_devices " +
+                                            "WHERE item_id = {0}", i.Id);
+            while(r.Read())
+            {
+                BK_Device d = getDevice(r, "dev_id");
+                if (r.GetInt("param").HasBit(K_DEV_DEFAULT)) i.DefaultDevice = d;
+                i.Devices.Add(d);
+            }
+            r.Close();
+        }
 
         public void SetButton(Button b) { b.Text = Name; b.Tag = this; }
 
@@ -86,7 +104,7 @@ namespace MyBooks
         public int I_Id { get { return Id; } }
         public string I_Name { get { return Name; } }
         public string I_Short { get { return Short; } }
-        public Image I_Icon { get { return Properties.Resources.bank16; } }
+        public Image I_Icon { get { return Properties.Resources.device_16; } }
         public List<BO_Field> I_Params()
         {
             List<BO_Field> l = new List<BO_Field>

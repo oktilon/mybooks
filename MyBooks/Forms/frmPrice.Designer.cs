@@ -65,10 +65,6 @@
             this.lblSurf = new System.Windows.Forms.Label();
             this.cmdSurf = new System.Windows.Forms.Button();
             this.lblType = new System.Windows.Forms.Label();
-            this.lblVen = new System.Windows.Forms.Label();
-            this.cmdVen = new System.Windows.Forms.Button();
-            this.cmdDevice = new System.Windows.Forms.Button();
-            this.lblDevice = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.split)).BeginInit();
             this.split.Panel1.SuspendLayout();
             this.split.Panel2.SuspendLayout();
@@ -241,7 +237,7 @@
             this.split2.Panel2.Controls.Add(this.lblBase);
             this.split2.Panel2.Controls.Add(this.lblMin);
             this.split2.Size = new System.Drawing.Size(265, 291);
-            this.split2.SplitterDistance = 113;
+            this.split2.SplitterDistance = 130;
             this.split2.TabIndex = 0;
             // 
             // lblTop
@@ -249,9 +245,9 @@
             this.lblTop.AutoSize = true;
             this.lblTop.Location = new System.Drawing.Point(0, 0);
             this.lblTop.Name = "lblTop";
-            this.lblTop.Size = new System.Drawing.Size(92, 13);
+            this.lblTop.Size = new System.Drawing.Size(39, 13);
             this.lblTop.TabIndex = 0;
-            this.lblTop.Text = "Код в каталогах:";
+            this.lblTop.Text = "lblTop:";
             // 
             // gridTop
             // 
@@ -266,7 +262,7 @@
             this.gridTop.Name = "gridTop";
             this.gridTop.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
             this.gridTop.SelectionMode = SourceGrid.GridSelectionMode.Cell;
-            this.gridTop.Size = new System.Drawing.Size(265, 94);
+            this.gridTop.Size = new System.Drawing.Size(265, 111);
             this.gridTop.TabIndex = 1;
             this.gridTop.TabStop = true;
             this.gridTop.ToolTipText = "";
@@ -293,13 +289,16 @@
             // 
             // gridBot
             // 
+            this.gridBot.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.gridBot.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.gridBot.EnableSort = true;
             this.gridBot.Location = new System.Drawing.Point(0, 45);
             this.gridBot.Name = "gridBot";
             this.gridBot.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
             this.gridBot.SelectionMode = SourceGrid.GridSelectionMode.Cell;
-            this.gridBot.Size = new System.Drawing.Size(265, 131);
+            this.gridBot.Size = new System.Drawing.Size(265, 114);
             this.gridBot.TabIndex = 5;
             this.gridBot.TabStop = true;
             this.gridBot.ToolTipText = "";
@@ -310,9 +309,9 @@
             this.lblBot.AutoSize = true;
             this.lblBot.Location = new System.Drawing.Point(0, 0);
             this.lblBot.Name = "lblBot";
-            this.lblBot.Size = new System.Drawing.Size(55, 13);
+            this.lblBot.Size = new System.Drawing.Size(53, 13);
             this.lblBot.TabIndex = 0;
-            this.lblBot.Text = "Единицы:";
+            this.lblBot.Text = "lblBottom:";
             // 
             // lblBase
             // 
@@ -369,7 +368,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtNameUa.Location = new System.Drawing.Point(80, 67);
             this.txtNameUa.Name = "txtNameUa";
-            this.txtNameUa.Size = new System.Drawing.Size(262, 20);
+            this.txtNameUa.Size = new System.Drawing.Size(446, 20);
             this.txtNameUa.TabIndex = 7;
             // 
             // lblArt
@@ -472,57 +471,11 @@
             this.lblType.Text = "Type name";
             this.lblType.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // lblVen
-            // 
-            this.lblVen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblVen.AutoSize = true;
-            this.lblVen.Location = new System.Drawing.Point(348, 70);
-            this.lblVen.Name = "lblVen";
-            this.lblVen.Size = new System.Drawing.Size(40, 13);
-            this.lblVen.TabIndex = 8;
-            this.lblVen.Text = "Марка";
-            // 
-            // cmdVen
-            // 
-            this.cmdVen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdVen.Location = new System.Drawing.Point(394, 65);
-            this.cmdVen.Name = "cmdVen";
-            this.cmdVen.Size = new System.Drawing.Size(132, 23);
-            this.cmdVen.TabIndex = 9;
-            this.cmdVen.Text = "Vendor";
-            this.cmdVen.UseVisualStyleBackColor = true;
-            this.cmdVen.Click += new System.EventHandler(this.cmdVen_Click);
-            // 
-            // cmdDevice
-            // 
-            this.cmdDevice.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cmdDevice.Location = new System.Drawing.Point(257, 422);
-            this.cmdDevice.Name = "cmdDevice";
-            this.cmdDevice.Size = new System.Drawing.Size(110, 23);
-            this.cmdDevice.TabIndex = 26;
-            this.cmdDevice.Text = "PRN";
-            this.cmdDevice.UseVisualStyleBackColor = true;
-            this.cmdDevice.Click += new System.EventHandler(this.cmdDevice_Click);
-            // 
-            // lblDevice
-            // 
-            this.lblDevice.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblDevice.AutoSize = true;
-            this.lblDevice.Location = new System.Drawing.Point(127, 427);
-            this.lblDevice.Name = "lblDevice";
-            this.lblDevice.Size = new System.Drawing.Size(124, 13);
-            this.lblDevice.TabIndex = 25;
-            this.lblDevice.Text = "Принтер по умолчанию";
-            // 
             // frmPrice
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(538, 455);
-            this.Controls.Add(this.cmdDevice);
-            this.Controls.Add(this.lblDevice);
-            this.Controls.Add(this.cmdVen);
-            this.Controls.Add(this.lblVen);
             this.Controls.Add(this.lblType);
             this.Controls.Add(this.cmdSurf);
             this.Controls.Add(this.cmdDen);
@@ -604,9 +557,5 @@
 		private System.Windows.Forms.Label lblSurf;
 		private System.Windows.Forms.Button cmdSurf;
 		private System.Windows.Forms.Label lblType;
-		private System.Windows.Forms.Label lblVen;
-		private System.Windows.Forms.Button cmdVen;
-        private System.Windows.Forms.Button cmdDevice;
-        private System.Windows.Forms.Label lblDevice;
     }
 }

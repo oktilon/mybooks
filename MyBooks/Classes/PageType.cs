@@ -12,6 +12,7 @@ namespace MyBooks
         public string[] Names;
         public int[] Width;
         public int ixCar = 0;
+        public int ixVar = 0;
         public int ixDev = 0;
         public int ixPrc = 0;
         public int ixCnt = 0;
@@ -36,6 +37,7 @@ namespace MyBooks
             arr = tmp.Split(',');
             Width = arr.Select(x => Convert.ToInt32(x)).ToArray();
             ixCar = r.GetInt("t_carrier");
+            ixVar = r.GetInt("t_variant");
             ixDev = r.GetInt("t_device");
             ixPrc = r.GetInt("t_price");
             ixCnt = r.GetInt("t_count");

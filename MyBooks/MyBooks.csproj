@@ -81,6 +81,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ButtonTag.cs" />
+    <Compile Include="Classes\BK_VarItem_Enum.cs" />
     <Compile Include="Classes\BK_Variant.cs" />
     <Compile Include="Classes\CatalogItem.cs" />
     <Compile Include="Classes\Bill.cs" />
@@ -95,16 +97,24 @@
     <Compile Include="Classes\BK_Order.cs" />
     <Compile Include="Classes\BK_OrderItem.cs" />
     <Compile Include="Classes\BK_Point.cs" />
-    <Compile Include="Classes\BK_SubItem.cs" />
+    <Compile Include="Classes\BK_VarItem.cs" />
     <Compile Include="Classes\BK_Carrier.cs" />
     <Compile Include="Classes\BK_Surface.cs" />
-    <Compile Include="Classes.cs" />
     <Compile Include="Classes\BO_Field.cs" />
     <Compile Include="Classes\BO_Flag.cs" />
     <Compile Include="Classes\Company.cs" />
     <Compile Include="Classes\PageType.cs" />
     <Compile Include="Classes\SNMP.cs" />
     <Compile Include="Classes\T.cs" />
+    <Compile Include="Classes\ContextTag.cs" />
+    <Compile Include="DateTimeExtension.cs" />
+    <Compile Include="Classes\DenMonth.cs" />
+    <Compile Include="Forms\frmAboutBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmAboutBox.Designer.cs">
+      <DependentUpon>frmAboutBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\frmEncrypt.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -198,6 +208,9 @@
     <Compile Include="Program.cs" />
     <None Include="ProgramSettingsExample.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\frmAboutBox.resx">
+      <DependentUpon>frmAboutBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmCompany.resx">
       <DependentUpon>frmCompany.cs</DependentUpon>
     </EmbeddedResource>
@@ -267,7 +280,7 @@
     <Compile Include="Sql\denSQL.cs" />
     <Compile Include="Sql\denSQLExtension.cs" />
     <Compile Include="Sql\denTable.cs" />
-    <Compile Include="User.cs" />
+    <Compile Include="Classes\User.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\SourceGrid4\SourceGrid\SourceGrid.csproj">
@@ -392,6 +405,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Coins.ico" />
+    <None Include="Pics\ok_16.png" />
+    <None Include="Pics\device_16.png" />
+    <None Include="Pics\info16.png" />
+    <None Include="Pics\logo.png" />
     <None Include="Pics\modify_16.png" />
     <None Include="Pics\format16.png" />
     <None Include="Pics\density16.png" />
@@ -421,4 +438,7 @@
       <UserProperties BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_BuildVersioningStyle="None.None.Increment.MonthStamp" />
     </VisualStudio>
   </ProjectExtensions>
+  <PropertyGroup>
+    <PreBuildEvent>"D:\Пользователь\Documents\Visual Studio 2017\Projects\VI.exe" $(ConfigurationName) "D:\Пользователь\Documents\Visual Studio 2017\Projects\MyBooks\MyBooks"</PreBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -19,13 +19,13 @@ namespace MyBooks
 		public BK_Icon Ico = BK_Icon.Default;
 		public string Desc = "";
 		public string Articul = "";
-		public Company Manufacturer = Company.Unknown;
 		public BK_Format ServiceFormat = BK_Format.Unknown;
         public int Group = 0;
 		public BK_Carrier Carrier = BK_Carrier.NotCarrier;
         public List<BK_Device> Devices = new List<BK_Device>();
 		public List<ItemPrice> Prices = new List<ItemPrice>();
-		public List<ItemRemain> Remains = new List<ItemRemain>();
+        public List<BK_Variant> Variants = new List<BK_Variant>();
+        public List<ItemRemain> Remains = new List<ItemRemain>();
 		public List<ItemUnit> SubUnits = new List<ItemUnit>();
 
         public BK_Carrier DefaultCarrier = BK_Carrier.NotCarrier;
@@ -53,6 +53,8 @@ namespace MyBooks
 			Param = 1; // In_use
 			DefaultUnit = Unit.getUnit(1); // шт
 			MinUnit = Unit.getUnit(1); // шт
+            Devices.Add(BK_Device.getDevice(1));
+            DefaultDevice = Devices[0];
             string sNewId = getNextId();
 
 			switch (iWhat)
@@ -121,9 +123,7 @@ namespace MyBooks
             ServiceFormat = BK_Format.getFormat(r, "i_fmt");  // i_fmt
             Desc = r.GetString("i_desc");
             Articul = r.GetString("i_art");
-            Manufacturer = Company.getCompany(r, "i_man");
             Group = r.GetInt("i_group");
-            DefaultDevice = BK_Device.getDevice(r, "i_device");
             if (r.Good("car_iid")) Carrier = new BK_Carrier(r);
         }
 
@@ -156,6 +156,7 @@ namespace MyBooks
         public void ReadTables()
 		{
             ItemPrice.readItemPrices(this);
+            BK_Device.getItemDevices(this);
             readRemains();
             readSubUnits();
 		}
@@ -272,8 +273,6 @@ namespace MyBooks
 			t.AddFld("i_fmt", ServiceFormat.Id);
 			t.AddNul("i_desc", Desc);
 			t.AddNul("i_art", Articul);
-			t.AddFld("i_man", Manufacturer.Id);
-            t.AddFld("i_device", DefaultDevice.Id);
 			int ret = t.Store(ref Id);
 			if (Id == 0) return ret;
             storePrices();

@@ -257,5 +257,11 @@ namespace MyBooks
             //r.Close();
             e.Cancel = iBadCnt > 0;
         }
+
+        private void toolAbout_Click(object sender, EventArgs e)
+        {
+            Forms.frmAboutBox f = new Forms.frmAboutBox();
+            f.ShowDialog();
+        }
     }
 }

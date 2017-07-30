@@ -19,8 +19,11 @@ namespace MyBooks
 		// Owner draws
 		private LinearGradientBrush lgbrSelect;
 		private Pen penSel;
-		// Cells
-		Sgc.Views.RowHeader rh, rhUnit;
+        // Grids
+        private string sTopTag = "";
+        private string sBotTag = "";
+        // Cells
+        Sgc.Views.RowHeader rh, rhUnit;
 		Sgc.Views.Cell vRight;
 		Sgc.Views.Cell vLeft;
 		Sgc.Editors.TextBoxCurrency eMoney;
@@ -46,40 +49,35 @@ namespace MyBooks
 			penSel = new Pen(Brushes.CornflowerBlue, 1);
 			// GRID
 			rh = new Sgc.Views.RowHeader();
-            DevAge.Drawing.VisualElements.RowHeader rhR = new DevAge.Drawing.VisualElements.RowHeader()
-            {
-                BackColor = Color.Lavender
-            };
+            DevAge.Drawing.VisualElements.RowHeader rhR = new DevAge.Drawing.VisualElements.RowHeader() { BackColor = Color.Lavender };
             rh.Background = rhR;
 			rh.TextAlignment = DevAge.Drawing.ContentAlignment.MiddleCenter;
 			rhUnit = new Sgc.Views.RowHeader();
-            rhR = new DevAge.Drawing.VisualElements.RowHeader()
-            {
-                BackColor = Color.Lavender
-            };
+            rhR = new DevAge.Drawing.VisualElements.RowHeader() { BackColor = Color.Lavender };
             rhUnit.Background = rhR;
 			rhUnit.TextAlignment = DevAge.Drawing.ContentAlignment.MiddleRight;
 
-            frmPriceGridEvents ctrlEventsTop;
-            frmPriceGridEvents ctrlEventsBot;
             if (m_Item.IsService)
             {
+                sTopTag = "var";
                 lblTop.Text = "Варианты:";
-                gridTop.SetHeaders(new string[] { "Наимен.", "Кол.", "Ед.", "Парам." }, new int[] { 0, 0, 0, 0 }, false);
-                ctrlEventsTop = new frmPriceGridEvents(this, "sub");
+                gridTop.SetHeaders(new string[] { "Наимен.", "Состав", "Устройство", "Парам." }, new int[] { 0, 0, 0, 0 }, false);
+                sBotTag = "dev";
                 lblBot.Text = "Устройства:";
                 gridBot.SetHeaders(new string[] { "Устройство", "Расход", "По.умолч." }, new int[] { 0, 0, 0 }, false);
-                ctrlEventsBot = new frmPriceGridEvents(this, "dev");
+                
             }
             else
             {
+                sTopTag = "cat";
                 lblTop.Text = "Код в каталогах:";
                 gridTop.SetHeaders(new string[] { "Код", "Поставщик", "Цена", "Ед." }, new int[] { 0, 0, 0, 0 }, false);
-                ctrlEventsTop = new frmPriceGridEvents(this, "cat");
+                sBotTag = "unit";
                 lblBot.Text = "Единицы измерения:";
                 gridBot.SetHeaders(new string[] { "Доп.ед.", "Кол.", "Баз.ед." }, new int[] { 0, 0, 0 }, false);
-                ctrlEventsBot = new frmPriceGridEvents(this, "unit");
             }
+            frmPriceGridEvents ctrlEventsTop = new frmPriceGridEvents(this, sTopTag);
+            frmPriceGridEvents ctrlEventsBot = new frmPriceGridEvents(this, sBotTag);
             gridTop.Controller.AddController(ctrlEventsTop);
             gridBot.Controller.AddController(ctrlEventsBot);
 
@@ -130,20 +128,16 @@ namespace MyBooks
                 m_Item.ServiceFormat.SetButton(cmdFmt);
             }
 
-            lblDevice.Visible = m_Item.IsService;
-            cmdDevice.Visible = m_Item.IsService;
-            m_Item.DefaultDevice.SetButton(cmdDevice);
-
             lblMin.Visible = !m_Item.IsService;
             cmdMin.Visible = !m_Item.IsService;
             lblBase.Visible = !m_Item.IsService;
             cmdBase.Visible = !m_Item.IsService;
             gridBot.Top = m_Item.IsService ? 16 : 45;
-            //gridBot.Height 
+            gridBot.Height = split2.Height -
+                split2.SplitterDistance -
+                split2.SplitterWidth -
+                gridBot.Top;
 
-            lblVen.Visible = !m_Item.IsService;
-            cmdVen.Visible = !m_Item.IsService;
-            m_Item.Manufacturer.SetButton(cmdVen);
 			//
 			m_Item.MinUnit.SetButton(cmdMin);
 			m_Item.DefaultUnit.SetButton(cmdBase);
@@ -152,8 +146,8 @@ namespace MyBooks
 			cbIcon.SelectedItem = bki;
 			if (m_Item.MinUnit != m_Item.DefaultUnit) ItemUnit.AddDefaultBaseToMin(m_Item);
 			FillPrices();
-			FillCatalogs();
-			FillUnits();
+			FillTopGrid();
+			FillBotGrid();
 		}
 
 		void eUnit_ConvertingValueToDisplayString(object sender, DevAge.ComponentModel.ConvertingObjectEventArgs e)
@@ -204,55 +198,87 @@ namespace MyBooks
 			grid.AutoSizeCells();
 		}
 
-		private void FillCatalogs()
+		private void FillTopGrid()
 		{
-			gridTop.Redim(1, 4);
+            int iCols = gridTop.ColumnsCount;
+			gridTop.Redim(1, iCols);
 			int iRow = 1;
-			denSQL.denReader r = denSQL.Query("SELECT ct_id, ct_code, ct_com, ct_price, ct_unit FROM bk_cat WHERE ct_item={0}", m_Item.Id);
-			while (r.Read())
-			{
-				gridTop.Rows.Insert(iRow);
-				gridTop.Rows[iRow].Tag = r.GetInt(0);
-				Company cp = Company.getCompany(r, "ct_com");
-				Unit u = Unit.getUnit(r, "ct_unit");
+            switch (sTopTag)
+            {
+                case "cat":
+                    denSQL.denReader r = denSQL.Query("SELECT ct_id, ct_code, ct_com, ct_price, ct_unit FROM bk_cat WHERE ct_item={0}", m_Item.Id);
+                    while (r.Read())
+                    {
+                        gridTop.Rows.Insert(iRow);
+                        gridTop.Rows[iRow].Tag = r.GetInt(0);
+                        Company cp = Company.getCompany(r, "ct_com");
+                        Unit u = Unit.getUnit(r, "ct_unit");
 
-                gridTop[iRow, 0] = new Sgc.RowHeader(r.GetString(1))
-                {
-                    View = rh
-                };
-                gridTop[iRow, 1] = new Sgc.Cell(cp.Name);
+                        gridTop[iRow, 0] = new Sgc.RowHeader(r.GetString(1)) { View = rh };
+                        gridTop[iRow, 1] = new Sgc.Cell(cp.Name);
+                        gridTop[iRow, 2] = new Sgc.Cell(r.GetDecimal(3), eMoneyRO) { View = vRight };
+                        gridTop[iRow, 3] = new Sgc.Cell(u);
+                        iRow++;
+                    }
+                    r.Close();
+                    break;
 
-                gridTop[iRow, 2] = new Sgc.Cell(r.GetDecimal(3), eMoneyRO)
-                {
-                    View = vRight
-                };
-                gridTop[iRow, 3] = new Sgc.Cell(u);
-				iRow++;
-			}
-			r.Close();
-		}
+                case "var":
+                    foreach (BK_Variant v in BK_Variant.getItemVariants(m_Item))
+                    {
+                        gridTop.Rows.Insert(iRow);
+                        gridTop.Rows[iRow].Tag = v;
+                        gridTop[iRow, 0] = new Sgc.RowHeader(v.Name) { View = rh };
+                        gridTop[iRow, 1] = new Sgc.Cell(v.Amount);
+                        gridTop[iRow, 2] = new Sgc.Cell(v.Device) { View = vRight };
+                        gridTop[iRow, 3] = new Sgc.Image(v.ParamImg);
+                        gridTop[iRow, 3].Editor.EditableMode = SourceGrid.EditableMode.None;
+                        iRow++;
+                    }
+                    break;
+            }
+            gridTop.AutoSizeCells();
+        }
 
-		private void FillUnits()
+		private void FillBotGrid()
 		{
-			gridBot.Redim(1, 3);
+            int iCols = gridTop.ColumnsCount;
+            gridBot.Redim(1, iCols);
 			int iRow = 0;
-			foreach (ItemUnit iu in m_Item.SubUnits)
-			{
-				gridBot.Rows.Insert(++iRow);
-				gridBot.Rows[iRow].Tag = iu;
+            switch (sBotTag)
+            {
+                case "unit":
+                    foreach (ItemUnit iu in m_Item.SubUnits)
+                    {
+                        gridBot.Rows.Insert(++iRow);
+                        gridBot.Rows[iRow].Tag = iu;
 
-                gridBot[iRow, 0] = new Sgc.RowHeader(iu.SubUnit)
-                {
-                    View = rh,
-                    Editor = eUnit
-                };
-                gridBot[iRow, 1] = new Sgc.Cell(iu.Cnt, eDecimal)
-                {
-                    View = vRight
-                };
-                gridBot[iRow, 2] = new Sgc.Cell(iu.CntUnit);
-			}
-		}
+                        gridBot[iRow, 0] = new Sgc.RowHeader(iu.SubUnit) { View = rh, Editor = eUnit };
+                        gridBot[iRow, 1] = new Sgc.Cell(iu.Cnt, eDecimal) { View = vRight };
+                        gridBot[iRow, 2] = new Sgc.Cell(iu.CntUnit);
+                    }
+                    break;
+
+                case "dev":
+                    foreach(BK_Device d in m_Item.Devices)
+                    {
+                        gridBot.Rows.Insert(++iRow);
+                        gridBot.Rows[iRow].Tag = d;
+
+                        gridBot[iRow, 0] = new Sgc.RowHeader(d.Name) { View = rh };
+                        gridBot[iRow, 1] = new Sgc.Cell("-");
+                        Sgc.Image def = new Sgc.Image();
+                        if (d == m_Item.DefaultDevice)
+                        {
+                            def = new Sgc.Image(RsRc.ok_16);
+                        }
+                        def.Editor.EditableMode = SourceGrid.EditableMode.None;
+                        gridBot[iRow, 2] = def;
+                    }
+                    break;
+            }
+            gridBot.AutoSizeCells();
+        }
 
 		private void cmdOk_Click(object sender, EventArgs e)
 		{
@@ -290,10 +316,9 @@ namespace MyBooks
 				m_Item.ServiceFormat = (BK_Format)cmdFmt.Tag;
             if(m_Item.IsService)
             {
-                m_Item.DefaultDevice = (BK_Device)cmdDevice.Tag;
+                //m_Item.DefaultDevice = (BK_Device)cmdDevice.Tag;
             }
 
-			m_Item.Manufacturer = (Company)cmdVen.Tag;
 			ItemUnit.AddDefaultBaseToMin(m_Item);
 			m_Item.Store();
 		}
@@ -452,7 +477,7 @@ namespace MyBooks
 		private void Menu_AddUnitClick(object sender, EventArgs e)
 		{
 			m_Item.AddSubUnit((Unit)((ToolStripItem)sender).Tag);
-			FillUnits();
+			FillBotGrid();
 		}
 
 		private void cmdMenu_Click(Button btn, Type tAdd, string sMethod = "getAll")

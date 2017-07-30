@@ -35,6 +35,8 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.toolBase = new System.Windows.Forms.ToolStripMenuItem();
             this.toolExit = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolHelp = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.stStrip = new System.Windows.Forms.StatusStrip();
             this.stStripLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.stStripProgress = new System.Windows.Forms.ToolStripProgressBar();
@@ -74,7 +76,8 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolBase});
+            this.toolBase,
+            this.toolHelp});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(394, 24);
@@ -94,9 +97,25 @@
             this.toolExit.Image = global::MyBooks.Properties.Resources.Exit16;
             this.toolExit.Name = "toolExit";
             this.toolExit.ShortcutKeyDisplayString = "Alt+F4";
-            this.toolExit.Size = new System.Drawing.Size(150, 22);
+            this.toolExit.Size = new System.Drawing.Size(152, 22);
             this.toolExit.Text = "Выход";
             this.toolExit.Click += new System.EventHandler(this.toolExit_Click);
+            // 
+            // toolHelp
+            // 
+            this.toolHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolAbout});
+            this.toolHelp.Name = "toolHelp";
+            this.toolHelp.Size = new System.Drawing.Size(65, 20);
+            this.toolHelp.Text = "Справка";
+            // 
+            // toolAbout
+            // 
+            this.toolAbout.Image = global::MyBooks.Properties.Resources.info16;
+            this.toolAbout.Name = "toolAbout";
+            this.toolAbout.Size = new System.Drawing.Size(158, 22);
+            this.toolAbout.Text = "О программе...";
+            this.toolAbout.Click += new System.EventHandler(this.toolAbout_Click);
             // 
             // stStrip
             // 
@@ -249,5 +268,7 @@
         private System.Windows.Forms.Button btnPrice;
         private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.Button btnOrders;
+        private System.Windows.Forms.ToolStripMenuItem toolHelp;
+        private System.Windows.Forms.ToolStripMenuItem toolAbout;
     }
 }

@@ -36,10 +36,10 @@ namespace MyBooks
 			return denSQL.Command("INSERT INTO bk_carrier (car_iid, car_density, car_fmt, car_surface) VALUES ({0}, {1}, {2}, {3})", oPar);
 		}
 
-		public string CaptionUa { get { return ItemId == 0 ? "" : String.Format(" ({0} {1}г.)", Surface.ShortUa, Density); } }
-		public string Caption { get { return ItemId == 0 ? "-" : String.Format("{0} {1}г", Surface, Density); } }
-		public string Short { get { return ItemId == 0 ? "" : String.Format(" ({0}{1}г)", Surface.Short, Density); } }
-		public string ShortCaption { get { return ItemId == 0 ? "" : String.Format("{0} {1}г", Surface.Short, Density); } }
+		public string CaptionUa { get { return ItemId == 0 ? "" : String.Format(" ({0} {1})", Surface.ShortUa, Density); } }
+		public string Caption { get { return ItemId == 0 ? "-" : String.Format("{0} {1}", Surface, Density); } }
+		public string Short { get { return ItemId == 0 ? "" : String.Format(" ({0}{1})", Surface.Short, Density); } }
+		public string ShortCaption { get { return ItemId == 0 ? "" : String.Format("{0} {1}", Surface.Short, Density); } }
 
         public static void initCarriers()
         {

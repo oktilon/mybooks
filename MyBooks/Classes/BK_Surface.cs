@@ -12,15 +12,16 @@ namespace MyBooks
 		public string Name = "Любая";
 		public string Short = "-";
 		public string ShortUa = "-";
+        public string Unit = "";
 
 		public BK_Surface() { }
-		public BK_Surface(denSQL.denReader r, int iOffset = 0)
+		public BK_Surface(denSQL.denReader r)
 		{
-			int i = iOffset;
-			Id = r.GetInt(i++);
-			Name = r.GetString(i++);
-			Short = r.GetString(i++);
-			ShortUa = r.GetString(i++);
+			Id = r.GetInt("sf_id");
+			Name = r.GetString("sf_name");
+			Short = r.GetString("sf_short");
+			ShortUa = r.GetString("sf_short_ua");
+            Unit = r.GetString("sf_unit");
 		}
 
 		public static BK_Surface Any = new BK_Surface();
@@ -31,7 +32,9 @@ namespace MyBooks
 			denSQL.denTable t = denSQL.CreateTable("bk_surface", "sf_id");
 			t.AddFld("sf_name", Name);
 			t.AddFld("sf_short", Short);
-			return t.Store(ref Id);
+            t.AddFld("sf_short_ua", ShortUa);
+            t.AddFld("sf_unit", Unit);
+            return t.Store(ref Id);
 		}
 
 		public void SetButton(Button b) { b.Text = Name; b.Tag = this; }
@@ -59,27 +62,49 @@ namespace MyBooks
 
         public override string ToString() { return Name.ToString(); }
 		public override int GetHashCode() { return Name.GetHashCode(); }
-		
-		#region IBkObject
-		public int I_Id { get { return Id; } }
+
+        #region IBkObject
+        private bool Edit(bool bNew)
+        {
+            if (bNew)
+            {
+                Name = "Тип";
+                Short = "Тип";
+                ShortUa = "Тип";
+                Unit = "г";
+            }
+            frmEditor f = new frmEditor(this);
+            if (f.ShowDialog() == DialogResult.Cancel) return false;
+            Store();
+            if (Id == 0) return false;
+            if (bNew) cache.Add(this);
+            return true;
+        }
+        public int I_Id { get { return Id; } }
 		public string I_Name { get { return Name; } }
 		public string I_Short { get { return Short; } }
-		public System.Drawing.Image I_Icon { get { return MyBooks.Properties.Resources.surface16; } }
+		public System.Drawing.Image I_Icon { get { return Properties.Resources.surface16; } }
 		public List<BO_Field> I_Params()
 		{
 			List<BO_Field> l = new List<BO_Field>();
-			l.Add(new BO_Field("", Name, 0, 45));
-			return l;
+			l.Add(new BO_Field("Имя", Name, 0, 45));
+            l.Add(new BO_Field("Кратко", Short, 0, 10));
+            l.Add(new BO_Field("КраткоДок", ShortUa, 0, 45));
+            l.Add(new BO_Field("Ед.", Unit, 0, 5));
+            return l;
 		}
 		public void I_SetParam(int idx, object val)
 		{
 			switch (idx)
 			{
 				case 0: Name = (string)val; return;
-			}
+                case 1: Short = (string)val; return;
+                case 2: ShortUa = (string)val; return;
+                case 3: Unit = (string)val; return;
+            }
 		}
-		public bool I_OnNew() { return false; }
-		public bool I_Edit() { return false; }
+		public bool I_OnNew() { return Edit(true); }
+		public bool I_Edit() { return Edit(false); }
 		public bool I_Store() { return Store() != 0; }
 		#endregion
 	}

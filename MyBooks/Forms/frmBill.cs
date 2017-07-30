@@ -179,6 +179,10 @@ namespace MyBooks
                 {
                     oVal = ip == null ? BK_Carrier.NotCarrier : ip.Carrier;
                 }
+                if(iCol == page.type.ixVar)
+                {
+                    oVal = ip == null ? BK_Variant.Default : ip.Variant;
+                }
                 if(iCol == page.type.ixDev)
                 {
                     oVal = ip == null ? BK_Device.NullDevice : bi.Device;
@@ -454,6 +458,7 @@ namespace MyBooks
 		{
 			SourceGrid.Grid grid = (SourceGrid.Grid)cntx.Grid;
             Page page = Page.getPage(grid.Tag.ToString());
+            BK_Item it = (BK_Item)grid.Rows[cntx.Position.Row].Tag;
             List<ItemPrice> prc = (List<ItemPrice>)grid[cntx.Position.Row, 0].Tag;
 			ContextMenuStrip cms = new ContextMenuStrip();
             if (cntx.Position.Column == 0)
@@ -477,14 +482,22 @@ namespace MyBooks
                     foreach (ItemPrice c in ccx)
                         cms.Items.Add(c.Carrier.Caption, RsRc.documents16, MenuItem_Carrier_Click).Tag = c;
                 }
+                if(cntx.Position.Column == page.type.ixVar)
+                { // Variant
+                    BK_Variant var = (BK_Variant)cntx.Value;
+                    IEnumerable<ItemPrice> ccx = from x in prc where x.Variant != var select x;
+                    cntxMenu = cntx;
+                    foreach (ItemPrice c in ccx)
+                        cms.Items.Add(c.Variant.Name, RsRc.documents16, MenuItem_Variant_Click).Tag = c;
+
+                }
                 if (cntx.Position.Column == page.type.ixDev)
                 {  // Device
                     BK_Device dev = (BK_Device)cntx.Value;
                     cntxMenu = cntx;
-                    foreach (BK_Device d in BK_Device.getAll())
+                    foreach (BK_Device d in it.Devices)
                     {
-                        Bitmap obj = (Bitmap)RsRc.ResourceManager.GetObject("Ink16", RsRc.Culture);
-                        cms.Items.Add(d.Short, obj, MenuItem_Device_Click).Tag = d;
+                        cms.Items.Add(d.Short, RsRc.device_16, MenuItem_Device_Click).Tag = d;
                     }
                 }
                 if (cms.Items.Count == 0) return;
@@ -499,6 +512,20 @@ namespace MyBooks
 			int iR = cntxMenu.Position.Row;
 			SwitchItemPrice(iR, ip);
 		}
+
+        public void MenuItem_Variant_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem tsmi = (ToolStripMenuItem)sender;
+            ItemPrice ip = (ItemPrice)tsmi.Tag;
+            if (ip == null || cntxMenu.IsEmpty()) return;
+            int iR = cntxMenu.Position.Row;
+            SwitchItemPrice(iR, ip);
+            if(!ip.Variant.Device.IsNull)
+            {
+                tsmi.Tag = ip.Variant.Device;
+                MenuItem_Device_Click(tsmi, e);
+            }
+        }
 
         public void MenuItem_Device_Click(object sender, EventArgs e)
         {
@@ -808,5 +835,11 @@ namespace MyBooks
 			// NEW TAB PAGE
 		}
 	}
+
+    public class BillEventArgs
+    {
+        public BillEventArgs(Bill b) { Bill = b; }
+        public Bill Bill { get; private set; } // readonly
+    }
 }
 
