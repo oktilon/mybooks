@@ -103,6 +103,7 @@ namespace MyBooks
             BK_Format.initFormats();
             BK_Density.initDenities();
             BK_Surface.initSurfaces();
+            BK_CarrierType.initCarrierTypes();
             User.initUsers();
             Company.initCompanies();
             BK_Icon.initIcons();
@@ -114,6 +115,7 @@ namespace MyBooks
             Page.initPages();
             BK_Item.initItems();
             BK_Variant.initVariants();
+            BK_Item.initItemVariants();
         }
 
         static void RunMainForm()

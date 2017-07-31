@@ -81,6 +81,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BK_CarrierType.cs" />
     <Compile Include="Classes\ButtonTag.cs" />
     <Compile Include="Classes\BK_VarItem_Enum.cs" />
     <Compile Include="Classes\BK_Variant.cs" />
@@ -405,6 +406,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Coins.ico" />
+    <None Include="Pics\var_16.png" />
     <None Include="Pics\ok_16.png" />
     <None Include="Pics\device_16.png" />
     <None Include="Pics\info16.png" />

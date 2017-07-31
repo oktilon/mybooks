@@ -90,7 +90,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtName.Location = new System.Drawing.Point(47, 12);
             this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(378, 20);
+            this.txtName.Size = new System.Drawing.Size(478, 20);
             this.txtName.TabIndex = 1;
             // 
             // lblShort
@@ -141,7 +141,7 @@
             // 
             this.chkUse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkUse.AutoSize = true;
-            this.chkUse.Location = new System.Drawing.Point(431, 14);
+            this.chkUse.Location = new System.Drawing.Point(531, 14);
             this.chkUse.Name = "chkUse";
             this.chkUse.Size = new System.Drawing.Size(103, 17);
             this.chkUse.TabIndex = 10;
@@ -154,7 +154,7 @@
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cmdCancel.ForeColor = System.Drawing.Color.Maroon;
-            this.cmdCancel.Location = new System.Drawing.Point(458, 420);
+            this.cmdCancel.Location = new System.Drawing.Point(558, 420);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(68, 23);
             this.cmdCancel.TabIndex = 24;
@@ -168,7 +168,7 @@
             this.cmdOk.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.cmdOk.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cmdOk.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.cmdOk.Location = new System.Drawing.Point(384, 420);
+            this.cmdOk.Location = new System.Drawing.Point(484, 420);
             this.cmdOk.Name = "cmdOk";
             this.cmdOk.Size = new System.Drawing.Size(68, 23);
             this.cmdOk.TabIndex = 23;
@@ -189,7 +189,7 @@
             this.grid.Name = "grid";
             this.grid.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
             this.grid.SelectionMode = SourceGrid.GridSelectionMode.Cell;
-            this.grid.Size = new System.Drawing.Size(257, 275);
+            this.grid.Size = new System.Drawing.Size(350, 275);
             this.grid.TabIndex = 1;
             this.grid.TabStop = true;
             this.grid.ToolTipText = "";
@@ -210,8 +210,8 @@
             // split.Panel2
             // 
             this.split.Panel2.Controls.Add(this.split2);
-            this.split.Size = new System.Drawing.Size(529, 294);
-            this.split.SplitterDistance = 257;
+            this.split.Size = new System.Drawing.Size(629, 294);
+            this.split.SplitterDistance = 350;
             this.split.TabIndex = 19;
             // 
             // split2
@@ -236,7 +236,7 @@
             this.split2.Panel2.Controls.Add(this.lblBot);
             this.split2.Panel2.Controls.Add(this.lblBase);
             this.split2.Panel2.Controls.Add(this.lblMin);
-            this.split2.Size = new System.Drawing.Size(265, 291);
+            this.split2.Size = new System.Drawing.Size(272, 291);
             this.split2.SplitterDistance = 130;
             this.split2.TabIndex = 0;
             // 
@@ -262,7 +262,7 @@
             this.gridTop.Name = "gridTop";
             this.gridTop.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
             this.gridTop.SelectionMode = SourceGrid.GridSelectionMode.Cell;
-            this.gridTop.Size = new System.Drawing.Size(265, 111);
+            this.gridTop.Size = new System.Drawing.Size(272, 111);
             this.gridTop.TabIndex = 1;
             this.gridTop.TabStop = true;
             this.gridTop.ToolTipText = "";
@@ -298,7 +298,7 @@
             this.gridBot.Name = "gridBot";
             this.gridBot.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
             this.gridBot.SelectionMode = SourceGrid.GridSelectionMode.Cell;
-            this.gridBot.Size = new System.Drawing.Size(265, 114);
+            this.gridBot.Size = new System.Drawing.Size(272, 114);
             this.gridBot.TabIndex = 5;
             this.gridBot.TabStop = true;
             this.gridBot.ToolTipText = "";
@@ -368,7 +368,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtNameUa.Location = new System.Drawing.Point(80, 67);
             this.txtNameUa.Name = "txtNameUa";
-            this.txtNameUa.Size = new System.Drawing.Size(446, 20);
+            this.txtNameUa.Size = new System.Drawing.Size(546, 20);
             this.txtNameUa.TabIndex = 7;
             // 
             // lblArt
@@ -386,7 +386,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtArt.Location = new System.Drawing.Point(299, 41);
             this.txtArt.Name = "txtArt";
-            this.txtArt.Size = new System.Drawing.Size(227, 20);
+            this.txtArt.Size = new System.Drawing.Size(327, 20);
             this.txtArt.TabIndex = 5;
             // 
             // lblTypeCap
@@ -475,7 +475,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(538, 455);
+            this.ClientSize = new System.Drawing.Size(638, 455);
             this.Controls.Add(this.lblType);
             this.Controls.Add(this.cmdSurf);
             this.Controls.Add(this.cmdDen);
@@ -500,7 +500,7 @@
             this.Controls.Add(this.lblNameUa);
             this.Controls.Add(this.lblName);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(554, 494);
+            this.MinimumSize = new System.Drawing.Size(654, 494);
             this.Name = "frmPrice";
             this.Text = "Товар/услуга";
             this.Load += new System.EventHandler(this.frmPrice_Load);

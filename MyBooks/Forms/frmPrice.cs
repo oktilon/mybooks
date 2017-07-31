@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 
 using Sgc = SourceGrid.Cells;
 using RsRc = MyBooks.Properties.Resources;
+using SourceGrid;
 
 namespace MyBooks
 {
@@ -25,19 +24,30 @@ namespace MyBooks
         // Cells
         Sgc.Views.RowHeader rh, rhUnit;
 		Sgc.Views.Cell vRight;
-		Sgc.Views.Cell vLeft;
+		Sgc.Views.Cell vCenter;
 		Sgc.Editors.TextBoxCurrency eMoney;
 		Sgc.Editors.TextBoxCurrency eMoneyRO;
-        Sgc.Editors.TextBoxNumeric eDecimal;
-        Sgc.Editors.TextBoxNumeric eCons;
+        Sgc.Editors.TextBoxNumeric eInt;
+        Sgc.Editors.TextBoxNumeric eIntRO;
 		Sgc.Editors.TextBox eUnit;
-		string[] hdrStrService = new string[] { "Точка", "Бумага", "Цена", "Расх.", "Ед." };
-		string[] hdrStrItem = new string[] { "Точка", "Остаток", "Цена", "Ед." };
-		int[] hdrInt = new int[] { 0, 0, 0, 0, 0 };
+		string[] hdrStrService = new string[] { "Точка", "Расходник", "Вариант", "Цена", "Расход", "Ед." };
+		string[] hdrStrItem = new string[] { "Точка", "Остаток", "Ед.", "Цена" };
+		int[] hdrInt = new int[] { 0, 0, 0, 0, 0, 0 };
 		bool bGridUnits_Click = false;
+        private int ixTopDef = 0;
+        private int ixBotDef = 0;
+
+        const int COL_PNT = 0;
+        const int COL_CAR = 1;
+        const int COL_REM = 1;
+        const int COL_VAR = 2;
+        const int COL_PRCUN = 2;
+        const int COL_PRC = 3;
+        const int COL_CON = 4;
+        const int COL_CONUN = 5;
 
 
-		public frmPrice(BK_Item bi = null)
+        public frmPrice(BK_Item bi = null)
 		{
 			InitializeComponent();
 			m_Item = bi;
@@ -61,7 +71,7 @@ namespace MyBooks
             {
                 sTopTag = "var";
                 lblTop.Text = "Варианты:";
-                gridTop.SetHeaders(new string[] { "Наимен.", "Состав", "Устройство", "Парам." }, new int[] { 0, 0, 0, 0 }, false);
+                gridTop.SetHeaders(new string[] { "Наимен.", "Состав", "Парам." }, new int[] { 0, 0, 0 }, false);
                 sBotTag = "dev";
                 lblBot.Text = "Устройства:";
                 gridBot.SetHeaders(new string[] { "Устройство", "Расход", "По.умолч." }, new int[] { 0, 0, 0 }, false);
@@ -74,7 +84,7 @@ namespace MyBooks
                 gridTop.SetHeaders(new string[] { "Код", "Поставщик", "Цена", "Ед." }, new int[] { 0, 0, 0, 0 }, false);
                 sBotTag = "unit";
                 lblBot.Text = "Единицы измерения:";
-                gridBot.SetHeaders(new string[] { "Доп.ед.", "Кол.", "Баз.ед." }, new int[] { 0, 0, 0 }, false);
+                gridBot.SetHeaders(new string[] { "Доп.ед.", "Кол.", "Баз.ед.", "Мин.ед." }, new int[] { 0, 0, 0, 0 }, false);
             }
             frmPriceGridEvents ctrlEventsTop = new frmPriceGridEvents(this, sTopTag);
             frmPriceGridEvents ctrlEventsBot = new frmPriceGridEvents(this, sBotTag);
@@ -90,18 +100,13 @@ namespace MyBooks
 			if (m_Item == null) { DialogResult = DialogResult.Cancel; Close(); return; }
 
             vRight = new Sgc.Views.Cell() { TextAlignment = DevAge.Drawing.ContentAlignment.MiddleRight };
-            vLeft = new Sgc.Views.Cell() { TextAlignment = DevAge.Drawing.ContentAlignment.MiddleLeft };
+            vCenter = new Sgc.Views.Cell() { TextAlignment = DevAge.Drawing.ContentAlignment.MiddleCenter };
             Text += string.Format(" (Id:{0})", m_Item.Id);
 
             eMoney = new Sgc.Editors.TextBoxCurrency(typeof(decimal)) { CultureInfo = Program.m_cif };
-            eMoneyRO = new Sgc.Editors.TextBoxCurrency(typeof(decimal))
-            {
-                CultureInfo = Program.m_cif,
-                EditableMode = SourceGrid.EditableMode.None
-            };
-            eDecimal = new Sgc.Editors.TextBoxNumeric(typeof(decimal)) { CultureInfo = Program.m_cif };
-            eCons = new Sgc.Editors.TextBoxNumeric(typeof(int));
-            //eCons.CultureInfo = Program.m_cif;
+            eMoneyRO = new Sgc.Editors.TextBoxCurrency(typeof(decimal)) { CultureInfo = Program.m_cif, EditableMode = EditableMode.None };
+            eInt = new Sgc.Editors.TextBoxNumeric(typeof(int));
+            eIntRO = new Sgc.Editors.TextBoxNumeric(typeof(int)) { EditableMode = EditableMode.None };
             eUnit = new Sgc.Editors.TextBox(typeof(Unit)) { EditableMode = SourceGrid.EditableMode.None };
             eUnit.ConvertingValueToDisplayString += eUnit_ConvertingValueToDisplayString;
 			txtName.Text = m_Item.Name;
@@ -166,39 +171,41 @@ namespace MyBooks
 				grid.Rows.Insert(iRow);
 				grid.Rows[iRow].Tag = ip;
 
-                grid[iRow, 0] = new Sgc.RowHeader(ip.Pnt)
+                grid[iRow, COL_PNT] = new Sgc.RowHeader(ip.Pnt)
                 {
                     View = rh
                 };
                 if (m_Item.IsService)
                 {
                     BK_Item itCar = BK_Item.getItem(ip.Carrier.ItemId);
-                    grid[iRow, 1] = new Sgc.Cell(ip.Carrier); // CARRIER
-                    grid[iRow, 3] = new Sgc.Cell(ip.Consumption, eCons);
-                    grid[iRow, 4] = new Sgc.Cell(itCar.MinUnit);
+                    grid[iRow, COL_CAR] = new Sgc.Cell(ip.Carrier); // CARRIER
+                    grid[iRow, COL_VAR] = new Sgc.Cell(ip.Variant); // VARIANT
+                    grid[iRow, COL_CON] = new Sgc.Cell(ip.Consumption, eInt);
+                    grid[iRow, COL_CONUN] = new Sgc.Cell(itCar.MinUnit);
                 }
                 else
                 {
-                    grid[iRow, 1] = new Sgc.Cell(ip.CalculateRemain())
-                    {
-                        View = vRight
-                    };
-                    grid[iRow, 3] = new Sgc.Cell(ip.Unit);
+                    grid[iRow, COL_REM] = new Sgc.Cell(ip.CalculateRemain()) { View = vRight };
+                    grid[iRow, COL_PRCUN] = new Sgc.Cell(ip.Unit);
                 }
-				grid[iRow, 1].View = vRight;
 
-                grid[iRow, 2] = new Sgc.Cell(ip.Prc, eMoney)
-                {
-                    View = vRight
-                };
-                
+                grid[iRow, COL_PRC] = new Sgc.Cell(ip.Prc, eMoney) { View = vRight };                
 
 				iRow++;
 			}
 			grid.AutoSizeCells();
 		}
 
-		private void FillTopGrid()
+        private Sgc.Image DefaultImage(bool bDef)
+        {
+            Sgc.Image def = bDef ? 
+                new Sgc.Image(RsRc.ok_16) { Tag = 1, View = vCenter } : 
+                new Sgc.Image() { Tag = 0, View = vCenter };
+            def.Editor.EditableMode = SourceGrid.EditableMode.None;
+            return def;
+        }
+
+        private void FillTopGrid()
 		{
             int iCols = gridTop.ColumnsCount;
 			gridTop.Redim(1, iCols);
@@ -224,15 +231,15 @@ namespace MyBooks
                     break;
 
                 case "var":
-                    foreach (BK_Variant v in BK_Variant.getItemVariants(m_Item))
+                    foreach (BK_Variant v in m_Item.Variants)
                     {
                         gridTop.Rows.Insert(iRow);
                         gridTop.Rows[iRow].Tag = v;
-                        gridTop[iRow, 0] = new Sgc.RowHeader(v.Name) { View = rh };
+                        gridTop.Rows[iRow].Height = 21;
+                        gridTop[iRow, 0] = new Sgc.RowHeader(v.Name) { View = rh, Image = RsRc.var_16 };
                         gridTop[iRow, 1] = new Sgc.Cell(v.Amount);
-                        gridTop[iRow, 2] = new Sgc.Cell(v.Device) { View = vRight };
-                        gridTop[iRow, 3] = new Sgc.Image(v.ParamImg);
-                        gridTop[iRow, 3].Editor.EditableMode = SourceGrid.EditableMode.None;
+                        gridTop[iRow, 2] = DefaultImage(v == m_Item.DefaultVariant);
+                        ixTopDef = 2;
                         iRow++;
                     }
                     break;
@@ -254,26 +261,23 @@ namespace MyBooks
                         gridBot.Rows[iRow].Tag = iu;
 
                         gridBot[iRow, 0] = new Sgc.RowHeader(iu.SubUnit) { View = rh, Editor = eUnit };
-                        gridBot[iRow, 1] = new Sgc.Cell(iu.Cnt, eDecimal) { View = vRight };
+                        gridBot[iRow, 1] = new Sgc.Cell(iu.Cnt, eInt) { View = vRight };
                         gridBot[iRow, 2] = new Sgc.Cell(iu.CntUnit);
+                        gridBot[iRow, 3] = new Sgc.Cell(iu.MinCnt, eIntRO) { View = vRight };
                     }
                     break;
 
                 case "dev":
-                    foreach(BK_Device d in m_Item.Devices)
+                    foreach (BK_Device d in m_Item.Devices)
                     {
                         gridBot.Rows.Insert(++iRow);
                         gridBot.Rows[iRow].Tag = d;
+                        gridBot.Rows[iRow].Height = 21;
 
-                        gridBot[iRow, 0] = new Sgc.RowHeader(d.Name) { View = rh };
+                        gridBot[iRow, 0] = new Sgc.RowHeader(d.Name) { View = rh, Image = RsRc.device_16 };
                         gridBot[iRow, 1] = new Sgc.Cell("-");
-                        Sgc.Image def = new Sgc.Image();
-                        if (d == m_Item.DefaultDevice)
-                        {
-                            def = new Sgc.Image(RsRc.ok_16);
-                        }
-                        def.Editor.EditableMode = SourceGrid.EditableMode.None;
-                        gridBot[iRow, 2] = def;
+                        gridBot[iRow, 2] = DefaultImage(d == m_Item.DefaultDevice);
+                        ixBotDef = 2;
                     }
                     break;
             }
@@ -287,15 +291,20 @@ namespace MyBooks
 				for (int i = 1; i < grid.RowsCount; i++)
 				{
 					ItemPrice ip = (ItemPrice)grid.Rows[i].Tag;
-					ip.Prc = (decimal)grid[i, 2].Value;
+					ip.Prc = (decimal)grid[i, COL_PRC].Value;
 				}
 			}
 			if (gridBot.RowsCount > 1)
 			{
 				for (int i = 1; i < gridBot.RowsCount; i++)
 				{
-					ItemUnit iu = (ItemUnit)gridBot.Rows[i].Tag;
-					iu.Cnt = (int)gridBot[i, 1].Value;
+                    switch (sBotTag)
+                    {
+                        case "unit":
+                            ItemUnit iu = (ItemUnit)gridBot.Rows[i].Tag;
+                            iu.Cnt = (int)gridBot[i, 1].Value;
+                            break;
+                    }
 				}
 			}
 			m_Item.Name = txtName.Text;
@@ -312,10 +321,10 @@ namespace MyBooks
 				m_Item.Carrier.Density = (BK_Density)cmdDen.Tag;
 				m_Item.Carrier.Surface = (BK_Surface)cmdSurf.Tag;
 			}
-			else
-				m_Item.ServiceFormat = (BK_Format)cmdFmt.Tag;
+				
             if(m_Item.IsService)
             {
+                m_Item.ServiceFormat = (BK_Format)cmdFmt.Tag;
                 //m_Item.DefaultDevice = (BK_Device)cmdDevice.Tag;
             }
 
@@ -358,10 +367,11 @@ namespace MyBooks
                     ItemPrice ip = (ItemPrice)grid.Rows[cntx.Position.Row].Tag;
                     switch(cntx.Position.Column)
                     {
-                        case 2:
+                        case COL_PRC:
                             ip.setPrice(cntx.DisplayText);
                             break;
-                        case 4:
+                        case COL_CON:
+                            if (!m_Item.IsService) return;
                             ip.setConsumption(cntx.DisplayText);
                             break;
                     }
@@ -371,34 +381,70 @@ namespace MyBooks
             }
 		}
 
-        public void Grid_OnMouseUp(SourceGrid.CellContext cntx, string tag, MouseEventArgs e)
-		{
-			if (cntx.Grid == gridBot)
-			{
-				bGridUnits_Click = false;
-				if (cntx.Position.IsEmpty()) return;
-				if (cntx.Position.Column == 2 && cntx.Position.Row > 0 && e.Button == MouseButtons.Left) bGridUnits_Click = Unit.UnitsMenu(cntx, cmdChngUnit_Click);
-			}
-		}
-		private void cmdChngUnit_Click(object sender, EventArgs e) { }
-
-		private ToolStripMenuItem ListPriceUnits(BK_Point p, BK_Carrier car = null)
-		{
-            ToolStripMenuItem tsmi = new ToolStripMenuItem()
+        public void Grid_OnMouseUp(CellContext cntx, string tag, MouseEventArgs e)
+        {
+            if (cntx.Position.IsEmpty()) return;
+            int iRow = cntx.Position.Row;
+            if (iRow < 1) return;
+            int iCol = cntx.Position.Column;
+            switch (tag)
             {
-                Text = car == null ? p.ToString() : car.ToString(),
-                Image = car == null ? RsRc.home_16 : RsRc.documents16
-            };
+                case "cat":
+                    break;
+                case "var":
+                    break;
+                case "unit":
+                    bGridUnits_Click = false;
+                    if (iCol == 2 && e.Button == MouseButtons.Left) bGridUnits_Click = Unit.UnitsMenu(cntx, cmdChngUnit_Click);
+                    break;
+                case "dev":
+                    break;
+            }
+        }
+        private void cmdChngUnit_Click(object sender, EventArgs e) { }
+
+        public void Grid_OnDoubleClick(CellContext cntx, string tag, EventArgs e)
+        {
+            if (cntx.Position.IsEmpty()) return;
+            int iRow = cntx.Position.Row;
+            if (iRow < 1) return;
+            int iCol = cntx.Position.Column;
+            switch (tag)
+            {
+                case "cat":
+                    break;
+                case "var":
+                    if (ixTopDef > 0 && iCol == ixTopDef)
+                    {
+                        for (int ix = 1; ix < gridTop.RowsCount; ix++)
+                            gridTop[ix, ixTopDef] = DefaultImage(ix == iRow);
+                        gridTop.Refresh();
+                    }
+                    break;
+                case "unit":
+                    break;
+                case "dev":
+                    if (ixBotDef > 0 && iCol == ixBotDef)
+                    {
+                        for (int ix = 1; ix < gridBot.RowsCount; ix++)
+                            gridBot[ix, ixBotDef] = DefaultImage(ix == iRow);
+                        gridBot.Refresh();
+                    }
+                    break;
+            }
+        }
+
+
+        private ToolStripMenuItem Menu_ListItemUnits(BK_Point p)
+		{
+            ToolStripMenuItem tsmi = new ToolStripMenuItem() { Text = p.ToString(), Image = RsRc.home_16 };
             List<PrcAddTag> lmt = new List<PrcAddTag>();
 			List<Unit> lst = m_Item.ItemUnits;
 			foreach (Unit u in lst)
 			{
-				if (car == null)
-				{ if (m_Item.Prices.Any(x => x.Pnt == p && x.Unit == u)) continue; }
-				else
-				{ if (m_Item.Prices.Any(x => x.Pnt == p && x.Carrier == car && x.Unit == u)) continue; }
+				if (m_Item.Prices.Any(x => x.Pnt == p && x.Unit == u)) continue;
 
-				PrcAddTag mt = new PrcAddTag(p, u, car);
+				PrcAddTag mt = new PrcAddTag(p, u);
 				tsmi.DropDownItems.Add(u.Short, RsRc.meas_len_16, cmdAddPrice_MenuItem_Click).Tag = mt;
 				lmt.Add(mt);
 			}
@@ -407,27 +453,53 @@ namespace MyBooks
 			return tsmi;
 		}
 
-		private void cmdAddPrice_Click(object sender, EventArgs e)
+        private ToolStripMenuItem Menu_ListServiceVariants(BK_Point p, BK_Carrier car)
+        {
+            Unit pcs = Unit.getUnit(1);
+            Image imgCar = RsRc.documents16;
+            switch(car.Type.Id)
+            {
+                case 2: imgCar = RsRc.bank16; break;
+                case 3: imgCar = RsRc.device_16; break;
+            }
+            ToolStripMenuItem tsmi = new ToolStripMenuItem() { Text = car.ToString(), Image = imgCar };
+            List<PrcAddTag> lmt = new List<PrcAddTag>();
+            foreach (BK_Variant v in m_Item.Variants)
+            {
+                if (m_Item.Prices.Any(x => x.Pnt == p && x.Carrier == car && x.Variant == v)) continue;
+
+                PrcAddTag mt = new PrcAddTag(p, pcs, car, v);
+                tsmi.DropDownItems.Add(v.Name, RsRc.var_16, cmdAddPrice_MenuItem_Click).Tag = mt;
+                lmt.Add(mt);
+            }
+            tsmi.Tag = lmt;
+            tsmi.Click += cmdAddPrices_MenuItem_Click;
+            return tsmi;
+        }
+
+        private void cmdAddPrice_Click(object sender, EventArgs e)
 		{
 			int iUnits = m_Item.UnitsCount;
 			ContextMenuStrip cms = new ContextMenuStrip();
-            foreach (BK_Point p in BK_Point.getAll())
+            foreach (BK_Point p in BK_Point.getAll().OrderBy(p=>p.Name))
 			{
 				ToolStripMenuItem tsmi = null;
-				if (!m_Item.IsService && m_Item.Prices.Count(x => x.Pnt == p) >= iUnits) continue;
-				if (m_Item.IsService)
-				{
-					tsmi = new ToolStripMenuItem(p.ToString(), RsRc.home_16);
-					foreach (BK_Carrier car in BK_Carrier.getAll())
-					{
-						if (car.Format != m_Item.ServiceFormat) continue;
-						if (m_Item.Prices.Count(x => x.Pnt == p && x.Carrier == car) >= iUnits) continue;
-						ToolStripMenuItem msub = ListPriceUnits(p, car);
-						if (msub.HasDropDownItems) tsmi.DropDownItems.Add(msub);
-					}
-				}
-				else
-					tsmi = ListPriceUnits(p);
+                if (m_Item.IsService)
+                {
+                    tsmi = new ToolStripMenuItem(p.ToString(), RsRc.home_16);
+                    foreach (BK_Carrier car in BK_Carrier.getByType(m_Item.CarrierType))
+                    {
+                        if (car.Format != m_Item.ServiceFormat) continue;
+                        if (m_Item.Prices.Count(x => x.Pnt == p && x.Carrier == car) >= m_Item.Variants.Count()) continue;
+                        ToolStripMenuItem msub = Menu_ListServiceVariants(p, car);
+                        if (msub.HasDropDownItems) tsmi.DropDownItems.Add(msub);
+                    }
+                }
+                else
+                {
+                    if (m_Item.Prices.Count(x => x.Pnt == p) >= iUnits) continue;
+                    tsmi = Menu_ListItemUnits(p);
+                }
 				if (tsmi.HasDropDownItems) cms.Items.Add(tsmi);
 			}
 			if (cms.Items.Count < 1) return;
@@ -445,13 +517,21 @@ namespace MyBooks
 
         private void cmdDelPrice_Click(object sender, EventArgs e)
         {
-            SourceGrid.RangeRegion rr = grid.Selection.GetSelectionRegion();
+            RangeRegion rr = grid.Selection.GetSelectionRegion();
             if (rr.IsEmpty()) return;
             int rowPrc = rr[0].Start.Row;
             if (rowPrc < 1) return;
             ItemPrice ip = (ItemPrice)grid.Rows[rowPrc].Tag;
             //if(DialogBox)
-            if (MessageBox.Show("Удалить цену на " + ip.Carrier.Caption + "\nдля точки " + ip.Pnt.Name + "?", "Удаление цены", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            string var = ip.Variant.isDefault ? "" : string.Format("\nвариант {0}", ip.Variant.Name);
+            if (MessageBox.Show("Удалить цену на " + ip.Carrier.Caption +
+                                var + 
+                                "\nдля точки " + ip.Pnt.Name + "?",
+                                "Удаление цены",
+                                MessageBoxButtons.YesNo
+                          )
+                 == DialogResult.Yes
+                )
             {
                 ip.Delete();
                 FillPrices();
@@ -464,7 +544,7 @@ namespace MyBooks
 		private void gridUnits_MouseClick(object sender, MouseEventArgs e)
 		{
 			if (bGridUnits_Click) { bGridUnits_Click = false; return; }
-			if (e.Button == System.Windows.Forms.MouseButtons.Right)
+			if (e.Button == MouseButtons.Right)
 			{
 				ContextMenuStrip cms = new ContextMenuStrip();
 				foreach (Unit u in Unit.getAll())
@@ -522,9 +602,10 @@ namespace MyBooks
 
 		public frmPriceGridEvents(frmPrice frm, string tag) { m_Frm = frm; m_Tag = tag; }
 
-		public override void OnEditEnded(SourceGrid.CellContext sender, EventArgs e) { m_Frm.Grid_OnEditEnded(sender, m_Tag, e); }
-		public override void OnMouseUp(SourceGrid.CellContext sender, MouseEventArgs e) { m_Frm.Grid_OnMouseUp(sender, m_Tag, e); }
-	}
+		public override void OnEditEnded(CellContext sender, EventArgs e) { m_Frm.Grid_OnEditEnded(sender, m_Tag, e); }
+		public override void OnMouseUp(CellContext sender, MouseEventArgs e) { m_Frm.Grid_OnMouseUp(sender, m_Tag, e); }
+        public override void OnDoubleClick(CellContext sender, EventArgs e) { m_Frm.Grid_OnDoubleClick(sender, m_Tag, e); }
+    }
 
 	public class PrcObjTag
 	{
@@ -548,6 +629,7 @@ namespace MyBooks
 		public BK_Point p;
 		public BK_Carrier c;
 		public Unit u;
-		public PrcAddTag(BK_Point pp, Unit pu, BK_Carrier pc = null) { p = pp; c = pc; u = pu; }
-	}
+        public BK_Variant v;
+        public PrcAddTag(BK_Point pp, Unit pu, BK_Carrier pc = null, BK_Variant pv = null) { p = pp; c = pc; u = pu; v = pv; }
+    }
 }

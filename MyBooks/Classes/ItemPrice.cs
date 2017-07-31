@@ -14,6 +14,7 @@ namespace MyBooks
         public BK_Variant Variant = BK_Variant.Default;
 		public decimal Prc = 0m;
         public int Consumption = 0;
+        public BK_Device Device = BK_Device.NullDevice;
 		// Non storable
 		public bool HasChanged = false;
         public bool bDeleted = false;
@@ -23,12 +24,20 @@ namespace MyBooks
             HasChanged = true;
             ItemId = i.Id;
             Prc = p;
-            if (mt == null) return;
-            Pnt = mt.p;
-            Unit = mt.u;
-            if (mt.c == null) return;
-            Carrier = mt.c;
-            Consumption = 1;
+            if (mt != null)
+            {
+                Pnt = mt.p;
+                Unit = mt.u;
+                if (mt.c != null)
+                {
+                    Carrier = mt.c;
+                    Consumption = 1;
+                }
+                if(mt.v != null)
+                {
+                    Variant = mt.v;
+                }
+            }
         }
         public ItemPrice(BK_Item i, CatalogItem ci)
         {
@@ -50,6 +59,8 @@ namespace MyBooks
             Carrier = BK_Carrier.getCarrier(r, "p_car");
 			Prc = r.GetDecimal("p_prc");
             Consumption = r.GetInt("p_car_cnt");
+            Device = BK_Device.getDevice(r, "p_dev");
+            Variant = BK_Variant.getVariant(r, "p_var");
 		}
 
 		public int Store(int iItem = -1)
@@ -57,29 +68,23 @@ namespace MyBooks
             if (!HasChanged) return 0;
             if (iItem > 0 && ItemId == 0) ItemId = iItem;
             HasChanged = false;
-            object[] oPar = new object[] { ItemId, Pnt.Id, Unit.Id, Carrier.ItemId, Prc.ToString(denSQL.Cif_sql), Consumption };
-			//denSQL.Command("DELETE FROM bk_price WHERE p_item={0} AND p_point={1} AND p_unit={2} AND p_car={3}", oPar);
-			return denSQL.Command("INSERT INTO bk_price (p_item, p_point, p_unit, p_car, p_prc, p_car_cnt) " +
-                                "VALUES ({0}, {1}, {2}, {3}, {4}, {5}) " +
+            object[] oPar = new object[] { ItemId, Pnt.Id, Unit.Id, Carrier.ItemId, Variant.Id, Prc.ToString(denSQL.Cif_sql), Consumption, Device.Id };
+			return denSQL.Command("INSERT INTO bk_price (p_item, p_point, p_unit, p_car, p_var, p_prc, p_car_cnt, p_dev) " +
+                                "VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}) " +
                                 "ON DUPLICATE KEY UPDATE " +
-                                "p_prc = {4}," +
-                                "p_car_cnt = {5}", oPar);
+                                "p_prc = {5}," +
+                                "p_car_cnt = {6}," +
+                                "p_dev = {7}", oPar);
 		}
 
         public static void readItemPrices(BK_Item it)
         {
             it.Prices.Clear();
             denSQL.denReader r = denSQL.Query("SELECT * FROM bk_price " +
-                        "LEFT JOIN bk_variant ON v_id = p_var " +
                         "WHERE p_item={0} ORDER BY p_point, p_unit, p_car, p_var", it.Id);
             while (r.Read())
             {
                 ItemPrice ip = new ItemPrice(r);
-                if (!r.IsNull("v_id"))
-                {
-                    ip.Variant = new BK_Variant(r);
-                    if (ip.Variant.isDefault) it.DefaultVariant = ip.Variant;
-                }
                 it.Prices.Add(ip);
             }
             r.Close();

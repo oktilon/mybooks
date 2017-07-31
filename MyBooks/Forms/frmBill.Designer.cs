@@ -54,6 +54,7 @@
             this.cmdEditCustomer = new System.Windows.Forms.Button();
             this.tmrDblClk = new System.Windows.Forms.Timer(this.components);
             this.SplitV = new System.Windows.Forms.SplitContainer();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.tblBillBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dsMain)).BeginInit();
             this.cntxtCmdAdd.SuspendLayout();
@@ -332,6 +333,16 @@
             this.SplitV.SplitterDistance = 544;
             this.SplitV.TabIndex = 12;
             // 
+            // button1
+            // 
+            this.button1.Image = global::MyBooks.Properties.Resources.ok_16;
+            this.button1.Location = new System.Drawing.Point(342, 427);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(36, 27);
+            this.button1.TabIndex = 13;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // frmBill
             // 
             this.AcceptButton = this.cmdSave;
@@ -339,6 +350,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(880, 459);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.SplitV);
             this.Controls.Add(this.cmdAddItem);
             this.Controls.Add(this.cmdEditCustomer);
@@ -392,6 +404,7 @@
 		private System.Windows.Forms.SplitContainer SplitV;
 		private System.Windows.Forms.ToolStripMenuItem mnuAddPrint;
 		private System.Windows.Forms.ToolStripMenuItem mnuAddCarrier;
+        private System.Windows.Forms.Button button1;
     }
 }
 

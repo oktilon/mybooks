@@ -11,6 +11,7 @@ namespace MyBooks
 		public BK_Density Density = BK_Density.ZeroDensity;
 		public BK_Format Format = BK_Format.Unknown;
 		public BK_Surface Surface = BK_Surface.Any;
+        public BK_CarrierType Type = BK_CarrierType.Unknown;
 
         private static List<BK_Carrier> cache = null;
 
@@ -22,6 +23,7 @@ namespace MyBooks
 			Density = BK_Density.getDensity(r); // car_density
             Format = BK_Format.getFormat(r); // car_fmt
 			Surface = BK_Surface.getSurface(r); // car_surface
+            Type = BK_CarrierType.getCarrierType(r);
 		}
 
 		public static BK_Carrier NotCarrier = new BK_Carrier();
@@ -36,10 +38,10 @@ namespace MyBooks
 			return denSQL.Command("INSERT INTO bk_carrier (car_iid, car_density, car_fmt, car_surface) VALUES ({0}, {1}, {2}, {3})", oPar);
 		}
 
-		public string CaptionUa { get { return ItemId == 0 ? "" : String.Format(" ({0} {1})", Surface.ShortUa, Density); } }
-		public string Caption { get { return ItemId == 0 ? "-" : String.Format("{0} {1}", Surface, Density); } }
-		public string Short { get { return ItemId == 0 ? "" : String.Format(" ({0}{1})", Surface.Short, Density); } }
-		public string ShortCaption { get { return ItemId == 0 ? "" : String.Format("{0} {1}", Surface.Short, Density); } }
+		public string CaptionUa { get { return ItemId == 0 ? "" : String.Format(" ({0} {1}{2})", Surface.ShortUa, Density, Surface.Unit); } }
+		public string Caption { get { return ItemId == 0 ? "-" : String.Format("{0} {1}{2}", Surface, Density, Surface.Unit); } }
+		public string Short { get { return ItemId == 0 ? "" : String.Format(" ({0}{1}{2})", Surface.Short, Density, Surface.Unit); } }
+		public string ShortCaption { get { return ItemId == 0 ? "" : String.Format("{0} {1}{2}", Surface.Short, Density, Surface.Unit); } }
 
         public static void initCarriers()
         {
@@ -67,6 +69,7 @@ namespace MyBooks
         }
 
         public static List<BK_Carrier> getAll() { return cache; }
+        public static List<BK_Carrier> getByType(BK_CarrierType t) { return (from c in cache where c.Type == t orderby c.Caption select c).ToList(); }
 
         public override string ToString() { return ShortCaption; }
 		public override int GetHashCode() { return Caption.GetHashCode(); }

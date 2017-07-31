@@ -153,6 +153,10 @@ namespace MyBooks
                 };
                 page.Grid[iLine, 0] = rh;
 			}
+            else
+            {
+                page.Grid[iLine, 0].Value = it.Name;
+            }
 
 			ItemPrice ip = null;
             List<ItemPrice> prc = it.getPointPrices();
@@ -520,11 +524,6 @@ namespace MyBooks
             if (ip == null || cntxMenu.IsEmpty()) return;
             int iR = cntxMenu.Position.Row;
             SwitchItemPrice(iR, ip);
-            if(!ip.Variant.Device.IsNull)
-            {
-                tsmi.Tag = ip.Variant.Device;
-                MenuItem_Device_Click(tsmi, e);
-            }
         }
 
         public void MenuItem_Device_Click(object sender, EventArgs e)
@@ -834,7 +833,14 @@ namespace MyBooks
 		{
 			// NEW TAB PAGE
 		}
-	}
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Page p = Page.getPage((string)Tabs.SelectedTab.Tag);
+            if (p.Id == 0) return;
+            p.Grid.Refresh();
+        }
+    }
 
     public class BillEventArgs
     {

@@ -22,6 +22,7 @@ namespace MyBooks
 		public BK_Format ServiceFormat = BK_Format.Unknown;
         public int Group = 0;
 		public BK_Carrier Carrier = BK_Carrier.NotCarrier;
+        public BK_CarrierType CarrierType = BK_CarrierType.Unknown;
         public List<BK_Device> Devices = new List<BK_Device>();
 		public List<ItemPrice> Prices = new List<ItemPrice>();
         public List<BK_Variant> Variants = new List<BK_Variant>();
@@ -38,6 +39,8 @@ namespace MyBooks
 
         const int K_PARAM_IN_USE  = 0x01;
         const int K_PARAM_SERVICE = 0x02;
+
+        const int K_VARIANT_DEFAULT = 0x01;
 
         public BK_Item() { }
         public BK_Item(denSQL.denReader r) { readSelf(r); }
@@ -124,6 +127,7 @@ namespace MyBooks
             Desc = r.GetString("i_desc");
             Articul = r.GetString("i_art");
             Group = r.GetInt("i_group");
+            CarrierType = BK_CarrierType.getCarrierType(r, "i_car_type");
             if (r.Good("car_iid")) Carrier = new BK_Carrier(r);
         }
 
@@ -273,6 +277,7 @@ namespace MyBooks
 			t.AddFld("i_fmt", ServiceFormat.Id);
 			t.AddNul("i_desc", Desc);
 			t.AddNul("i_art", Articul);
+            t.AddFld("i_car_type", CarrierType.Id);
 			int ret = t.Store(ref Id);
 			if (Id == 0) return ret;
             storePrices();
@@ -321,6 +326,22 @@ namespace MyBooks
             }
             r.Close();
             foreach (BK_Item it in cache) it.ReadTables();
+        }
+
+        public static void initItemVariants()
+        {
+            BK_Item it = Unset;
+            denSQL.denReader r = denSQL.Query("SELECT * FROM bk_item_variants ORDER BY item_id, var_id");
+            while (r.Read())
+            {
+                int item_id = r.GetInt("item_id");
+                int param = r.GetInt("param");
+                if (it.Id != item_id) it = getItem(item_id);
+                BK_Variant v = BK_Variant.getVariant(r, "var_id");
+                it.Variants.Add(v);
+                if (param.HasBit(K_VARIANT_DEFAULT)) it.DefaultVariant = v;
+            }
+            r.Close();
         }
 
         public static BK_Item getItem(int id)

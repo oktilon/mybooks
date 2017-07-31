@@ -3,10 +3,6 @@ using System.Windows.Forms;
 
 namespace MyBooks
 {
-
-
-
-
 	public class ButtonTag : IBkTag
 	{
 		private Button btn;

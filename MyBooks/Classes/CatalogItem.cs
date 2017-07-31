@@ -128,6 +128,19 @@ namespace MyBooks
             Unit = oi.Unit;
             HasChanged = true;
         }
+
+        /*  FotoPapir read items (rel = ct_code)
+         *  pages:
+         *  binding comb spines  = https://fotopapir.com.ua/category/pruzhina-plastikovaja/
+         *  binding wire spines  = https://fotopapir.com.ua/category/pruzhiny-metallicheskie-dlja-perepleta/ 
+         *  lamination Glance A4 = https://fotopapir.com.ua/category/a4210297mm-plenka-dlja-laminirovanija/
+         *  lamination Glance A3 = https://fotopapir.com.ua/category/a3-plenka-dlja-laminirovanija/
+         *  lamination Matte     = https://fotopapir.com.ua/category/plenka-formatnaja-matovaja/
+         $('.product_brief_block').each(function(i,v){
+            //              ct_code                               price                                    name
+            console.log($(v).attr('rel') + ", " + $(v).find('.product_price').val() + ", " + $(v).find('[itemprop="name"]').text());
+        });
+        */
     }
 }
 
